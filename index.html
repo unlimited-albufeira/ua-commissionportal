@@ -137,9 +137,40 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
 .chip.on{background:rgba(249,115,22,.15);border-color:var(--sun);color:var(--sun);}
 .section-block{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:10px;}
 .block-title{font-size:11px;font-weight:700;margin-bottom:10px;color:var(--text);text-transform:uppercase;letter-spacing:.08em;}
+
+/* PULL TO REFRESH */
+#ptr-indicator{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:0;overflow:hidden;transition:height .2s ease;
+  background:var(--dark);
+}
+#ptr-indicator.visible{height:72px;}
+#ptr-indicator.releasing{height:72px;}
+#ptr-indicator svg{transition:transform .3s;}
+#ptr-indicator.releasing svg{animation:spin-sun .6s linear infinite;}
+#ptr-label{font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
+@keyframes spin-sun{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
+
+
+<div id="ptr-indicator">
+  <svg width="32" height="32" viewBox="0 0 80 64" fill="none">
+    <defs><linearGradient id="ptg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F97316"/><stop offset="1" stop-color="#FBBF24"/></linearGradient></defs>
+    <line x1="40" y1="5" x2="40" y2="0" stroke="url(#ptg)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="53" y1="9" x2="56" y2="5" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="27" y1="9" x2="24" y2="5" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="64" y1="20" x2="68" y2="17" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="16" y1="20" x2="12" y2="17" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="47" y1="7" x2="49.5" y2="3" stroke="url(#ptg)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="33" y1="7" x2="30.5" y2="3" stroke="url(#ptg)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M10 40 A30 30 0 0 1 70 40" fill="url(#ptg)"/>
+    <line x1="2" y1="40" x2="78" y2="40" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+  <div id="ptr-label">Pull to refresh</div>
+</div>
 
 <div id="page-login">
   <div class="login-orb"></div>
@@ -910,6 +941,58 @@ window.addEventListener("DOMContentLoaded",async()=>{
   if(saved){ME=JSON.parse(saved);await boot();}
   else{$("page-login").style.display="flex";$("page-login").classList.add("show");}
 });
+
+// PULL TO REFRESH
+(function(){
+  let startY=0, pulling=false, triggered=false;
+  const ind=document.getElementById('ptr-indicator');
+  const lbl=document.getElementById('ptr-label');
+  const THRESHOLD=80;
+
+  document.addEventListener('touchstart', e=>{
+    if(window.scrollY===0) { startY=e.touches[0].clientY; pulling=true; triggered=false; }
+  },{passive:true});
+
+  document.addEventListener('touchmove', e=>{
+    if(!pulling) return;
+    const dist=e.touches[0].clientY - startY;
+    if(dist>0 && window.scrollY===0){
+      ind.classList.add('visible');
+      ind.classList.remove('releasing');
+      if(dist>=THRESHOLD){
+        lbl.textContent='Release to refresh';
+        triggered=true;
+      } else {
+        lbl.textContent='Pull to refresh';
+        triggered=false;
+      }
+    }
+  },{passive:true});
+
+  document.addEventListener('touchend', async e=>{
+    if(!pulling) return;
+    pulling=false;
+    if(triggered){
+      ind.classList.add('releasing');
+      lbl.textContent='Refreshing…';
+      await loadData();
+      const active=document.querySelector('.sec.on');
+      if(active){
+        const id=active.id;
+        if(id==='s-dash') renderDash();
+        if(id==='s-commission') renderCommission();
+        if(id==='s-mysales') renderMySales();
+        if(id==='s-sellers') renderSellers();
+        if(id==='s-admin') renderAdmin();
+        if(id==='s-profile') renderProfile();
+      }
+    }
+    ind.classList.remove('visible','releasing');
+    lbl.textContent='Pull to refresh';
+    triggered=false;
+  },{passive:true});
+})();
+
 </script>
 </body>
 </html>
