@@ -191,6 +191,7 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
     <div class="sec on" id="s-dash"><div style="padding-top:12px;" id="dash-content"></div></div>
     <div class="sec" id="s-commission"><div style="padding-top:12px;" id="commission-content"></div></div>
     <div class="sec" id="s-mysales"><div style="padding-top:12px;" id="mysales-content"></div></div>
+    <div class="sec" id="s-profile"><div style="padding-top:12px;" id="profile-content"></div></div>
     <div class="sec" id="s-sellers">
       <div class="chip-row" id="sellers-filter"></div>
       <div id="sellers-list"></div>
@@ -356,9 +357,9 @@ async function loadData(){
 }
 
 const NAV_ITEMS = {
-  seller:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-commission",icon:"💰",label:"Commission"},{id:"s-mysales",icon:"🎟",label:"My Sales"}],
-  manager: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"My Team"}],
-  admin:   [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"Sellers"},{id:"s-admin",icon:"⚙",label:"Admin"}]
+  seller:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-commission",icon:"💰",label:"Commission"},{id:"s-mysales",icon:"🎟",label:"My Sales"},{id:"s-profile",icon:"👤",label:"Profile"}],
+  manager: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"My Team"},{id:"s-profile",icon:"👤",label:"Profile"}],
+  admin:   [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"Sellers"},{id:"s-admin",icon:"⚙",label:"Admin"},{id:"s-profile",icon:"👤",label:"Profile"}]
 };
 
 function buildNav(){
@@ -379,6 +380,7 @@ function goSec(id){
   if(id==="s-dash") renderDash();
   if(id==="s-commission") renderCommission();
   if(id==="s-mysales") renderMySales();
+  if(id==="s-profile") renderProfile();
   if(id==="s-sellers") renderSellers();
   if(id==="s-admin") renderAdmin();
 }
@@ -457,9 +459,7 @@ function renderDash(){
         </div>
         ${tierBarHTML(ME.agent_id)}
       </div>
-      <div style="margin-top:20px;">
-        <button class="btn-ghost" style="width:100%;color:var(--muted);" onclick="doLogout()">Log out</button>
-      </div>`;
+`;
   } else {
     const myAgents=role==="admin"
       ?AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active")
@@ -490,7 +490,7 @@ function renderDash(){
         </div>
       </div>
       <div style="margin-top:12px;"><button class="btn-primary" onclick="goSec('s-sellers')">View all sellers →</button></div>
-      <div style="margin-top:12px;"><button class="btn-ghost" style="width:100%;color:var(--muted);" onclick="doLogout()">Log out</button></div>`;
+`;
   }
 }
 
@@ -856,6 +856,33 @@ function openM(id){
 }
 function closeM(id){$(id).classList.remove("open");}
 document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
+
+
+function renderProfile(){
+  const wrap=$("profile-content");
+  const role=(ME.role||"seller").toLowerCase();
+  const roleLabel=role==="admin"?"Admin":role==="manager"?"Manager":"Seller";
+  const roleBadge=role==="admin"?"b-admin":role==="manager"?"b-manager":"b-pending";
+  wrap.innerHTML=`
+    <div class="dash-hero">
+      <div class="dash-hero-greeting">My Profile</div>
+      <div class="dash-hero-name"><span>${ME.name}</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+        <span class="badge ${roleBadge}">${roleLabel}</span>
+        <span style="font-size:12px;color:var(--muted);">${ME.email||""}</span>
+      </div>
+      <div class="stat-row" style="grid-template-columns:1fr;">
+        <div class="stat-box" style="padding:14px;">
+          <div class="stat-box-lbl" style="margin-bottom:6px;">Season</div>
+          <div style="font-size:15px;font-weight:600;">${ME.season||"2025"}</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:16px;">
+      <button class="btn-ghost" style="width:100%;color:var(--red);" onclick="doLogout()">Log out</button>
+    </div>
+  `;
+}
 
 window.addEventListener("DOMContentLoaded",async()=>{
   const saved=localStorage.getItem("ua2_me");
