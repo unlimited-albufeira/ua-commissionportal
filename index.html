@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Unlimited Albufeira — Commission Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -16,7 +16,7 @@
   --red:#F87171;--red-d:rgba(248,113,113,0.12);
   --blue:#60A5FA;--blue-d:rgba(96,165,250,0.12);
   --r:12px;--r-lg:18px;--g:linear-gradient(135deg,#F97316,#FBBF24);
-  --font:'Poppins',sans-serif;
+  --font:'Calibri','Nunito',sans-serif;
 }
 body{background:var(--dark);color:var(--text);min-height:100vh;font-family:var(--font);}
 #page-login{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden;}
@@ -247,8 +247,8 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
     <select class="inp" id="ms-event"></select>
     <label class="lbl">Type</label>
     <select class="inp" id="ms-type">
-      <option value="online">🌐 Online</option>
-      <option value="offline">🤝 Offline</option>
+      <option value="online">Online</option>
+      <option value="offline">Offline</option>
     </select>
     <label class="lbl">Tickets sold</label>
     <input type="number" class="inp" id="ms-qty" placeholder="e.g. 25" min="1">
@@ -449,8 +449,8 @@ function tierBarHTML(agentId){
   const pct=nt?Math.min(Math.round(((sold-curMin)/(nt.at-curMin))*100),100):100;
   return `<div class="tier-bar-wrap">
     <div class="tier-bar-top">
-      <div class="tier-bar-label">${nt?`${sold} / ${nt.at} tickets`:"Top tier reached 🎉"}</div>
-      <div class="tier-bar-rate">${nt?`Next: €${nt.rate.toFixed(3)}/ticket`:`€${rate.toFixed(3)}/ticket`}</div>
+      <div class="tier-bar-label">${nt?`${sold} / ${nt.at} tickets`:"Race to the next tier"}</div>
+      <div class="tier-bar-rate">${nt?`Next: ${nt.rate.toFixed(3)}/ticket`:`${rate.toFixed(3)}/ticket`}</div>
     </div>
     <div class="tier-track"><div class="tier-fill" style="width:${pct}%;"></div></div>
     ${nt?`<div class="tier-milestones"><span class="tier-mile">${curMin}</span><span class="tier-mile">${nt.at}</span></div>`:""}
@@ -474,12 +474,12 @@ function renderDash(){
             <div class="stat-box-lbl" style="font-size:8px;">Total</div>
           </div>
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${online}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">🌐 Online</div>
+            <div class="stat-box-val orange" style="font-size:20px;">${offline}</div>
+            <div class="stat-box-lbl" style="font-size:8px;">Offline</div>
           </div>
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${offline}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">🤝 Offline</div>
+            <div class="stat-box-val orange" style="font-size:20px;">${online}</div>
+            <div class="stat-box-lbl" style="font-size:8px;">Online</div>
           </div>
         </div>
         <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:0;">
@@ -518,12 +518,12 @@ function renderDash(){
             <div class="stat-box-lbl" style="font-size:8px;">Total</div>
           </div>
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${totOnline}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">🌐 Online</div>
+            <div class="stat-box-val orange" style="font-size:20px;">${totOffline}</div>
+            <div class="stat-box-lbl" style="font-size:8px;">Offline</div>
           </div>
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${totOffline}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">🤝 Offline</div>
+            <div class="stat-box-val orange" style="font-size:20px;">${totOnline}</div>
+            <div class="stat-box-lbl" style="font-size:8px;">Online</div>
           </div>
         </div>
         <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;">
@@ -600,8 +600,8 @@ function renderMySales(){
         </div>
       </div>
       <div class="stat-row">
-        <div class="stat-box"><div class="stat-box-val orange">${online}</div><div class="stat-box-lbl">🌐 Online</div></div>
-        <div class="stat-box"><div class="stat-box-val orange">${offline}</div><div class="stat-box-lbl">🤝 Offline</div></div>
+        <div class="stat-box"><div class="stat-box-val orange">${online}</div><div class="stat-box-lbl">Online</div></div>
+        <div class="stat-box"><div class="stat-box-val orange">${offline}</div><div class="stat-box-lbl">Offline</div></div>
       </div>
     </div>
     <div class="sec-title">All sales</div>
@@ -614,7 +614,7 @@ function renderSalesForAgent(agentId, limit){
   if(!sales.length) return `<div class="empty">No sales recorded yet.</div>`;
   return sales.map(s=>{
     const ev=EVENTS.find(e=>e.event_id===s.event_id)||{};
-    const typeLabel=(s.type||"").toLowerCase()==="online"?"🌐 Online":(s.type||"").toLowerCase()==="offline"?"🤝 Offline":"";
+    const typeLabel=(s.type||"").toLowerCase()==="online"?"Online":(s.type||"").toLowerCase()==="offline"?"Offline":"";
     return `<div class="sale-entry">
       <div class="sale-left">
         <div class="sale-event">${ev.event_name||s.event_id||"Unknown event"}</div>
