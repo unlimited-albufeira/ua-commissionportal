@@ -76,7 +76,7 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
 .tier-bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
 .tier-bar-label{font-size:11px;color:var(--muted);}
 .tier-bar-rate{font-size:13px;font-weight:700;color:var(--sun);}
-.tier-track{background:rgba(255,255,255,.07);border-radius:999px;height:5px;overflow:hidden;}
+.tier-track{background:rgba(255,255,255,.07);border-radius:999px;height:10px;overflow:hidden;}
 .tier-fill{height:100%;border-radius:999px;background:var(--g);transition:width .5s cubic-bezier(.4,0,.2,1);}
 .tier-milestones{display:flex;justify-content:space-between;margin-top:5px;}
 .tier-mile{font-size:10px;color:var(--muted);}
@@ -216,7 +216,7 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
         </svg>
         <div class="header-brand"><span>Unlimited</span> Albufeira</div>
       </div>
-      <div class="header-user" id="h-user"></div>
+      <div class="header-user" id="h-user" style="display:none;"></div>
     </div>
 
     <div class="sec on" id="s-dash"><div style="padding-top:12px;" id="dash-content"></div></div>
@@ -466,7 +466,7 @@ function renderDash(){
     const paid=totalPaid(ME.agent_id), open=outstanding(ME.agent_id);
     wrap.innerHTML=`
       <div class="dash-hero">
-        <div class="dash-hero-greeting">Welcome back,</div>
+        <div class="dash-hero-greeting" style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sun);">Unlimited NL Agent</div>
         <div class="dash-hero-name" style="margin-bottom:10px;font-size:20px;"><span>${ME.name}</span></div>
         <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
@@ -488,12 +488,12 @@ function renderDash(){
             <div class="stat-box-lbl" style="font-size:8px;">Earned</div>
           </div>
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val green" style="font-size:15px;">${fmt(paid)}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Paid out</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
             <div class="stat-box-val amber" style="font-size:15px;">${fmt(open)}</div>
             <div class="stat-box-lbl" style="font-size:8px;">Open</div>
+          </div>
+          <div class="stat-box" style="padding:10px 6px;text-align:center;">
+            <div class="stat-box-val green" style="font-size:15px;">${fmt(paid)}</div>
+            <div class="stat-box-lbl" style="font-size:8px;">Paid out</div>
           </div>
         </div>
         ${tierBarHTML(ME.agent_id)}
@@ -510,7 +510,7 @@ function renderDash(){
     const totOut=myAgents.reduce((s,a)=>s+outstanding(a.agent_id),0);
     wrap.innerHTML=`
       <div class="dash-hero">
-        <div class="dash-hero-greeting">Welcome back,</div>
+        <div class="dash-hero-greeting" style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sun);">Unlimited NL Agent</div>
         <div class="dash-hero-name" style="margin-bottom:10px;font-size:20px;"><span>${ME.name}</span></div>
         <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
@@ -532,12 +532,12 @@ function renderDash(){
             <div class="stat-box-lbl" style="font-size:8px;">${role==="admin"?"Sellers":"My team"}</div>
           </div>
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val green" style="font-size:15px;">${fmt(totEarned-totOut)}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Paid</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
             <div class="stat-box-val amber" style="font-size:15px;">${fmt(totOut)}</div>
             <div class="stat-box-lbl" style="font-size:8px;">Open</div>
+          </div>
+          <div class="stat-box" style="padding:10px 6px;text-align:center;">
+            <div class="stat-box-val green" style="font-size:15px;">${fmt(totEarned-totOut)}</div>
+            <div class="stat-box-lbl" style="font-size:8px;">Paid</div>
           </div>
         </div>
       </div>
