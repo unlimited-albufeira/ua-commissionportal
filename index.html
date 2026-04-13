@@ -446,14 +446,14 @@ async function boot(){
 function tierBarHTML(agentId){
   const sold=totalSold(agentId), nt=nextTier(agentId), curMin=currentTierMin(agentId);
   const rate=getRate(agentId,sold);
-  const pct=nt?Math.round(((sold-curMin)/(nt.at-curMin))*100):100;
+  const pct=nt?Math.min(Math.round(((sold-curMin)/(nt.at-curMin))*100),100):100;
   return `<div class="tier-bar-wrap">
     <div class="tier-bar-top">
-      <div class="tier-bar-label">${nt?`${sold-curMin} / ${nt.at-curMin} tickets to next tier`:"Top tier reached 🎉"}</div>
-      <div class="tier-bar-rate">${nt?`Next: €${nt.rate.toFixed(2)}/ticket`:`€${rate.toFixed(2)}/ticket`}</div>
+      <div class="tier-bar-label">${nt?`${sold} / ${nt.at} tickets`:"Top tier reached 🎉"}</div>
+      <div class="tier-bar-rate">${nt?`Next: €${nt.rate.toFixed(3)}/ticket`:`€${rate.toFixed(3)}/ticket`}</div>
     </div>
-    <div class="tier-track"><div class="tier-fill" style="width:${Math.min(pct,100)}%;"></div></div>
-    ${nt?`<div class="tier-milestones"><span class="tier-mile">${curMin} tkts</span><span class="tier-mile">${nt.at} tkts</span></div>`:""}
+    <div class="tier-track"><div class="tier-fill" style="width:${pct}%;"></div></div>
+    ${nt?`<div class="tier-milestones"><span class="tier-mile">${curMin}</span><span class="tier-mile">${nt.at}</span></div>`:""}
   </div>`;
 }
 
