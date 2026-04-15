@@ -137,6 +137,16 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
 .chip.on{background:rgba(249,115,22,.15);border-color:var(--sun);color:var(--sun);}
 .section-block{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:10px;}
 .block-title{font-size:11px;font-weight:700;margin-bottom:10px;color:var(--text);text-transform:uppercase;letter-spacing:.08em;}
+.collapsible-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:2px 0;}
+.collapsible-arrow{font-size:12px;color:var(--muted);transition:transform .25s;display:inline-block;}
+.collapsible-arrow.open{transform:rotate(180deg);}
+.collapsible-body{overflow:hidden;max-height:0;transition:max-height .3s ease;}
+.collapsible-body.open{max-height:600px;}
+.collapsible-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:2px 0;}
+.collapsible-arrow{font-size:12px;color:var(--muted);transition:transform .25s;display:inline-block;}
+.collapsible-arrow.open{transform:rotate(180deg);}
+.collapsible-body{overflow:hidden;max-height:0;transition:max-height .35s ease;}
+.collapsible-body.open{max-height:800px;}
 #ptr-indicator{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;height:0;overflow:hidden;transition:height .2s ease;background:var(--dark);}
 #ptr-indicator.visible{height:72px;}
 #ptr-indicator.releasing{height:72px;}
@@ -592,12 +602,22 @@ function renderCommission(){
       ${tierBarHTML(ME.agent_id,"online")}
     </div>
     <div class="section-block" style="margin-top:12px;">
-      <div class="block-title">Offline tiers · ${offRate.toFixed(3)}/ticket</div>
-      ${tierTableHtml(offTiers, offline, curOffMin)}
+      <div class="collapsible-header" onclick="toggleCollapsible('off-tiers')">
+        <div class="block-title" style="margin-bottom:0;">Offline tiers &middot; ${offRate.toFixed(3)}/ticket</div>
+        <span class="collapsible-arrow" id="off-tiers-arrow">&#9660;</span>
+      </div>
+      <div class="collapsible-body" id="off-tiers-body">
+        <div style="margin-top:10px;">${tierTableHtml(offTiers, offline, curOffMin)}</div>
+      </div>
     </div>
     <div class="section-block">
-      <div class="block-title">Online tiers · ${onRate.toFixed(3)}/ticket</div>
-      ${tierTableHtml(onTiers, online, curOnMin)}
+      <div class="collapsible-header" onclick="toggleCollapsible('on-tiers')">
+        <div class="block-title" style="margin-bottom:0;">Online tiers &middot; ${onRate.toFixed(3)}/ticket</div>
+        <span class="collapsible-arrow" id="on-tiers-arrow">&#9660;</span>
+      </div>
+      <div class="collapsible-body" id="on-tiers-body">
+        <div style="margin-top:10px;">${tierTableHtml(onTiers, online, curOnMin)}</div>
+      </div>
     </div>
     <div class="section-block">
       <div class="block-title">Payments received</div>${renderPaymentsForAgent(ME.agent_id)}
@@ -953,6 +973,24 @@ function renderProfile(){
     <div style="margin-top:16px;">
       <button class="btn-ghost" style="width:100%;color:var(--red);" onclick="doLogout()">Log out</button>
     </div>`;
+}
+
+function toggleCollapsible(id){
+  const body=document.getElementById(id+'-body');
+  const arrow=document.getElementById(id+'-arrow');
+  if(!body||!arrow) return;
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  arrow.classList.toggle('open',!isOpen);
+}
+
+function toggleCollapsible(id){
+  const body=document.getElementById(id+'-body');
+  const arrow=document.getElementById(id+'-arrow');
+  if(!body||!arrow) return;
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  arrow.classList.toggle('open',!isOpen);
 }
 
 window.addEventListener("DOMContentLoaded",async()=>{
