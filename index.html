@@ -62,7 +62,7 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
 .sec-title{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px;}
 .dash-hero{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:12px;position:relative;overflow:hidden;}
 .dash-hero::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--g);}
-.dash-hero-greeting{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.dash-hero-greeting{font-size:11px;color:var(--sun);margin-bottom:4px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
 .dash-hero-name{font-size:22px;font-weight:800;margin-bottom:16px;}
 .dash-hero-name span{background:var(--g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -137,24 +137,15 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
 .chip.on{background:rgba(249,115,22,.15);border-color:var(--sun);color:var(--sun);}
 .section-block{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:10px;}
 .block-title{font-size:11px;font-weight:700;margin-bottom:10px;color:var(--text);text-transform:uppercase;letter-spacing:.08em;}
-
-/* PULL TO REFRESH */
-#ptr-indicator{
-  position:fixed;top:0;left:0;right:0;z-index:999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:0;overflow:hidden;transition:height .2s ease;
-  background:var(--dark);
-}
+#ptr-indicator{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;height:0;overflow:hidden;transition:height .2s ease;background:var(--dark);}
 #ptr-indicator.visible{height:72px;}
 #ptr-indicator.releasing{height:72px;}
-#ptr-indicator svg{transition:transform .3s;}
 #ptr-indicator.releasing svg{animation:spin-sun .6s linear infinite;}
 #ptr-label{font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
 @keyframes spin-sun{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
-
 
 <div id="ptr-indicator">
   <svg width="32" height="32" viewBox="0 0 80 64" fill="none">
@@ -164,8 +155,6 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
     <line x1="27" y1="9" x2="24" y2="5" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
     <line x1="64" y1="20" x2="68" y2="17" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
     <line x1="16" y1="20" x2="12" y2="17" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="47" y1="7" x2="49.5" y2="3" stroke="url(#ptg)" stroke-width="2" stroke-linecap="round"/>
-    <line x1="33" y1="7" x2="30.5" y2="3" stroke="url(#ptg)" stroke-width="2" stroke-linecap="round"/>
     <path d="M10 40 A30 30 0 0 1 70 40" fill="url(#ptg)"/>
     <line x1="2" y1="40" x2="78" y2="40" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
   </svg>
@@ -218,7 +207,6 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
       </div>
       <div class="header-user" id="h-user" style="display:none;"></div>
     </div>
-
     <div class="sec on" id="s-dash"><div style="padding-top:12px;" id="dash-content"></div></div>
     <div class="sec" id="s-commission"><div style="padding-top:12px;" id="commission-content"></div></div>
     <div class="sec" id="s-mysales"><div style="padding-top:12px;" id="mysales-content"></div></div>
@@ -243,12 +231,10 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
     <div class="modal-hd">Add ticket sale</div>
     <div class="modal-sub" id="ms-sub"></div>
     <input type="hidden" id="ms-agent-id">
-    <label class="lbl">Event</label>
-    <select class="inp" id="ms-event"></select>
     <label class="lbl">Type</label>
     <select class="inp" id="ms-type">
-      <option value="online">Online</option>
       <option value="offline">Offline</option>
+      <option value="online">Online</option>
     </select>
     <label class="lbl">Tickets sold</label>
     <input type="number" class="inp" id="ms-qty" placeholder="e.g. 25" min="1">
@@ -314,8 +300,14 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
     </select>
     <label class="lbl">Manager (optional)</label>
     <select class="inp" id="ma-manager"><option value="">— None —</option></select>
+    <label class="lbl">Team</label>
+    <select class="inp" id="ma-team">
+      <option value="Unlimited NL">Unlimited NL</option>
+      <option value="Vida">Vida</option>
+      <option value="Unlimited INT">Unlimited INT</option>
+    </select>
     <label class="lbl">Season</label>
-    <input type="text" class="inp" id="ma-season" placeholder="e.g. 2025">
+    <input type="text" class="inp" id="ma-season" placeholder="e.g. 2026">
     <button class="btn-primary" id="ma-save">Create agent</button>
     <div class="form-msg" id="ma-msg"></div>
   </div>
@@ -333,7 +325,7 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
     <label class="lbl">Venue</label>
     <input type="text" class="inp" id="me-venue" placeholder="e.g. Rooftop Bar Albufeira">
     <label class="lbl">Season</label>
-    <input type="text" class="inp" id="me-season" placeholder="e.g. 2025">
+    <input type="text" class="inp" id="me-season" placeholder="e.g. 2026">
     <button class="btn-primary" id="me-save">Add event</button>
     <div class="form-msg" id="me-msg"></div>
   </div>
@@ -351,31 +343,44 @@ const fmt = n => "€" + parseFloat(n||0).toFixed(2);
 const fmtDate = d => { if(!d) return "—"; const dt=new Date(d); const dd=String(dt.getDate()).padStart(2,"0"); const mm=String(dt.getMonth()+1).padStart(2,"0"); const yyyy=dt.getFullYear(); return `${dd}.${mm}.${yyyy}`; };
 const genId = pfx => pfx + "-" + Date.now().toString(36).toUpperCase();
 const today = () => new Date().toISOString().slice(0,10);
+const teamLabel = agent => (agent.team||"Unlimited NL") + " Agent";
 
-function getRate(agentId, sold) {
-  const tiers=TIERS.filter(t=>t.agent_id===agentId).sort((a,b)=>parseInt(a.min_tickets)-parseInt(b.min_tickets));
+// ── COMMISSION CALC (split online/offline) ──
+function getTiers(agentId, type) {
+  return TIERS.filter(t => t.agent_id === agentId && (t.type||"").toLowerCase() === type.toLowerCase())
+    .sort((a,b) => parseInt(a.min_tickets) - parseInt(b.min_tickets));
+}
+function getRate(agentId, sold, type) {
+  const tiers = getTiers(agentId, type);
   if(!tiers.length) return 0;
-  let rate=parseFloat(tiers[0].commission_per_ticket||0);
-  for(const t of tiers){ if(sold>=parseInt(t.min_tickets)) rate=parseFloat(t.commission_per_ticket); }
+  let rate = parseFloat(tiers[0].commission_per_ticket||0);
+  for(const t of tiers){ if(sold >= parseInt(t.min_tickets)) rate = parseFloat(t.commission_per_ticket); }
   return rate;
 }
 function totalSold(id){ return SALES.filter(s=>s.agent_id===id&&(s.status||"active")!=="deleted").reduce((s,x)=>s+parseInt(x.quantity||0),0); }
 function onlineSold(id){ return SALES.filter(s=>s.agent_id===id&&(s.status||"active")!=="deleted"&&(s.type||"").toLowerCase()==="online").reduce((s,x)=>s+parseInt(x.quantity||0),0); }
 function offlineSold(id){ return SALES.filter(s=>s.agent_id===id&&(s.status||"active")!=="deleted"&&(s.type||"").toLowerCase()==="offline").reduce((s,x)=>s+parseInt(x.quantity||0),0); }
-function commissionEarned(id){ const s=totalSold(id); return s*getRate(id,s); }
+
+function commissionEarned(id){
+  const on = onlineSold(id);
+  const off = offlineSold(id);
+  return (on * getRate(id, on, "online")) + (off * getRate(id, off, "offline"));
+}
+
 function totalPaid(id){ return PAYMENTS.filter(p=>p.agent_id===id&&(p.status||"active")!=="deleted").reduce((s,x)=>s+parseFloat(x.amount||0),0); }
-function outstanding(id){ return Math.max(0,commissionEarned(id)-totalPaid(id)); }
-function nextTier(id){
-  const sold=totalSold(id);
-  const tiers=TIERS.filter(t=>t.agent_id===id).sort((a,b)=>parseInt(a.min_tickets)-parseInt(b.min_tickets));
-  for(const t of tiers){ if(parseInt(t.min_tickets)>sold) return {at:parseInt(t.min_tickets),rate:parseFloat(t.commission_per_ticket)}; }
+function outstanding(id){ return Math.max(0, commissionEarned(id) - totalPaid(id)); }
+
+function nextTierFor(agentId, type){
+  const sold = type==="online" ? onlineSold(agentId) : offlineSold(agentId);
+  const tiers = getTiers(agentId, type);
+  for(const t of tiers){ if(parseInt(t.min_tickets) > sold) return {at:parseInt(t.min_tickets), rate:parseFloat(t.commission_per_ticket)}; }
   return null;
 }
-function currentTierMin(id){
-  const sold=totalSold(id);
-  const tiers=TIERS.filter(t=>t.agent_id===id).sort((a,b)=>parseInt(a.min_tickets)-parseInt(b.min_tickets));
+function currentTierMinFor(agentId, type){
+  const sold = type==="online" ? onlineSold(agentId) : offlineSold(agentId);
+  const tiers = getTiers(agentId, type);
   let min=0;
-  for(const t of tiers){ if(sold>=parseInt(t.min_tickets)) min=parseInt(t.min_tickets); }
+  for(const t of tiers){ if(sold >= parseInt(t.min_tickets)) min = parseInt(t.min_tickets); }
   return min;
 }
 
@@ -443,13 +448,15 @@ async function boot(){
   buildNav(); await loadData(); renderDash();
 }
 
-function tierBarHTML(agentId){
-  const sold=totalSold(agentId), nt=nextTier(agentId), curMin=currentTierMin(agentId);
-  const rate=getRate(agentId,sold);
-  const pct=nt?Math.min(Math.round(((sold-curMin)/(nt.at-curMin))*100),100):100;
+function tierBarHTML(agentId, type){
+  const sold = type==="online" ? onlineSold(agentId) : offlineSold(agentId);
+  const nt = nextTierFor(agentId, type);
+  const curMin = currentTierMinFor(agentId, type);
+  const rate = getRate(agentId, sold, type);
+  const pct = nt ? Math.min(Math.round(((sold-curMin)/(nt.at-curMin))*100),100) : 100;
   return `<div class="tier-bar-wrap">
     <div class="tier-bar-top">
-      <div class="tier-bar-label">${nt?`${sold} / ${nt.at} tickets`:"Race to the next tier"}</div>
+      <div class="tier-bar-label">${type.charAt(0).toUpperCase()+type.slice(1)}: ${nt?`${sold} / ${nt.at} tickets`:"Race to the next tier"}</div>
       <div class="tier-bar-rate">${nt?`Next: ${nt.rate.toFixed(3)}/ticket`:`${rate.toFixed(3)}/ticket`}</div>
     </div>
     <div class="tier-track"><div class="tier-fill" style="width:${pct}%;"></div></div>
@@ -462,11 +469,11 @@ function renderDash(){
   const wrap=$("dash-content");
   if(role==="seller"){
     const sold=totalSold(ME.agent_id), online=onlineSold(ME.agent_id), offline=offlineSold(ME.agent_id);
-    const rate=getRate(ME.agent_id,sold), earned=commissionEarned(ME.agent_id);
+    const earned=commissionEarned(ME.agent_id);
     const paid=totalPaid(ME.agent_id), open=outstanding(ME.agent_id);
     wrap.innerHTML=`
       <div class="dash-hero">
-        <div class="dash-hero-greeting" style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sun);">Unlimited NL Agent</div>
+        <div class="dash-hero-greeting">${teamLabel(ME)}</div>
         <div class="dash-hero-name" style="margin-bottom:10px;font-size:20px;"><span>${ME.name}</span></div>
         <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
@@ -496,13 +503,16 @@ function renderDash(){
             <div class="stat-box-lbl" style="font-size:8px;">Paid out</div>
           </div>
         </div>
-        ${tierBarHTML(ME.agent_id)}
-      </div>
-`;
+        ${tierBarHTML(ME.agent_id,"offline")}
+        ${tierBarHTML(ME.agent_id,"online")}
+      </div>`;
   } else {
     const myAgents=role==="admin"
       ?AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active")
-      :AGENTS.filter(a=>a.manager_id===ME.agent_id&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active");
+      :AGENTS.filter(a=>{
+        const mgrs=(a.manager_id||"").split(",").map(x=>x.trim());
+        return mgrs.includes(ME.agent_id)&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active";
+      });
     const totOnline=myAgents.reduce((s,a)=>s+onlineSold(a.agent_id),0);
     const totOffline=myAgents.reduce((s,a)=>s+offlineSold(a.agent_id),0);
     const totTickets=myAgents.reduce((s,a)=>s+totalSold(a.agent_id),0);
@@ -510,7 +520,7 @@ function renderDash(){
     const totOut=myAgents.reduce((s,a)=>s+outstanding(a.agent_id),0);
     wrap.innerHTML=`
       <div class="dash-hero">
-        <div class="dash-hero-greeting" style="font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sun);">Unlimited NL Agent</div>
+        <div class="dash-hero-greeting">${teamLabel(ME)}</div>
         <div class="dash-hero-name" style="margin-bottom:10px;font-size:20px;"><span>${ME.name}</span></div>
         <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
           <div class="stat-box" style="padding:10px 6px;text-align:center;">
@@ -541,32 +551,33 @@ function renderDash(){
           </div>
         </div>
       </div>
-      <div style="margin-top:12px;"><button class="btn-primary" onclick="goSec('s-sellers')">View all sellers →</button></div>
-`;
+      <div style="margin-top:12px;"><button class="btn-primary" onclick="goSec('s-sellers')">View all sellers →</button></div>`;
   }
 }
 
 function renderCommission(){
   const wrap=$("commission-content");
-  const sold=totalSold(ME.agent_id), rate=getRate(ME.agent_id,sold);
+  const online=onlineSold(ME.agent_id), offline=offlineSold(ME.agent_id);
+  const onRate=getRate(ME.agent_id,online,"online"), offRate=getRate(ME.agent_id,offline,"offline");
   const earned=commissionEarned(ME.agent_id), paid=totalPaid(ME.agent_id), open=outstanding(ME.agent_id);
-  const curMin=currentTierMin(ME.agent_id);
-  const agentTiers=TIERS.filter(t=>t.agent_id===ME.agent_id).sort((a,b)=>parseInt(a.min_tickets)-parseInt(b.min_tickets));
-  const tiersHtml=agentTiers.length?`
+  const offTiers=getTiers(ME.agent_id,"offline"), onTiers=getTiers(ME.agent_id,"online");
+  const curOffMin=currentTierMinFor(ME.agent_id,"offline"), curOnMin=currentTierMinFor(ME.agent_id,"online");
+
+  const tierTableHtml = (tiers, sold, curMin) => tiers.length ? `
     <table class="tier-table">
       <thead><tr><th>Min tickets</th><th>Rate/ticket</th><th>Status</th></tr></thead>
-      <tbody>${agentTiers.map(t=>{
+      <tbody>${tiers.map(t=>{
         const isCurrent=parseInt(t.min_tickets)===curMin, isActive=sold>=parseInt(t.min_tickets);
         return `<tr class="${isCurrent?"tier-active-row":""}">
-          <td>${t.min_tickets}+</td><td>€${parseFloat(t.commission_per_ticket).toFixed(2)}</td>
+          <td>${t.min_tickets}+</td><td>${parseFloat(t.commission_per_ticket).toFixed(3)}</td>
           <td><span class="badge ${isCurrent?"b-partial":isActive?"b-paid":"b-pending"}">${isCurrent?"Active":isActive?"Passed":"Locked"}</span></td>
         </tr>`;
       }).join("")}</tbody>
-    </table>`:`<div class="empty">No tiers set yet.</div>`;
+    </table>` : `<div class="empty">No tiers set.</div>`;
+
   wrap.innerHTML=`
     <div class="dash-hero">
       <div class="dash-hero-greeting">My Commission</div>
-      <div class="dash-hero-name"><span>€${rate.toFixed(2)}</span> <span style="font-size:14px;color:var(--muted);font-weight:400;">per ticket</span></div>
       <div class="stat-row" style="grid-template-columns:1fr;margin-bottom:8px;">
         <div class="stat-box" style="text-align:center;padding:14px;">
           <div class="stat-box-val orange" style="font-size:28px;">${fmt(earned)}</div>
@@ -574,13 +585,19 @@ function renderCommission(){
         </div>
       </div>
       <div class="stat-row">
-        <div class="stat-box"><div class="stat-box-val green">${fmt(paid)}</div><div class="stat-box-lbl">Paid out</div></div>
         <div class="stat-box"><div class="stat-box-val amber">${fmt(open)}</div><div class="stat-box-lbl">Outstanding</div></div>
+        <div class="stat-box"><div class="stat-box-val green">${fmt(paid)}</div><div class="stat-box-lbl">Paid out</div></div>
       </div>
-      ${tierBarHTML(ME.agent_id)}
+      ${tierBarHTML(ME.agent_id,"offline")}
+      ${tierBarHTML(ME.agent_id,"online")}
     </div>
     <div class="section-block" style="margin-top:12px;">
-      <div class="block-title">Commission tiers</div>${tiersHtml}
+      <div class="block-title">Offline tiers · ${offRate.toFixed(3)}/ticket</div>
+      ${tierTableHtml(offTiers, offline, curOffMin)}
+    </div>
+    <div class="section-block">
+      <div class="block-title">Online tiers · ${onRate.toFixed(3)}/ticket</div>
+      ${tierTableHtml(onTiers, online, curOnMin)}
     </div>
     <div class="section-block">
       <div class="block-title">Payments received</div>${renderPaymentsForAgent(ME.agent_id)}
@@ -600,8 +617,8 @@ function renderMySales(){
         </div>
       </div>
       <div class="stat-row">
-        <div class="stat-box"><div class="stat-box-val orange">${online}</div><div class="stat-box-lbl">Online</div></div>
         <div class="stat-box"><div class="stat-box-val orange">${offline}</div><div class="stat-box-lbl">Offline</div></div>
+        <div class="stat-box"><div class="stat-box-val orange">${online}</div><div class="stat-box-lbl">Online</div></div>
       </div>
     </div>
     <div class="sec-title">All sales</div>
@@ -613,12 +630,10 @@ function renderSalesForAgent(agentId, limit){
     .sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,limit||999);
   if(!sales.length) return `<div class="empty">No sales recorded yet.</div>`;
   return sales.map(s=>{
-    const ev=EVENTS.find(e=>e.event_id===s.event_id)||{};
     const typeLabel=(s.type||"").toLowerCase()==="online"?"Online":(s.type||"").toLowerCase()==="offline"?"Offline":"";
     return `<div class="sale-entry">
       <div class="sale-left">
-        <div class="sale-event">${ev.event_name||s.event_id||"Unknown event"}</div>
-        <div class="sale-date">${fmtDate(s.date)}${s.notes?` · ${s.notes}`:""}</div>
+        <div class="sale-event">${fmtDate(s.date)}${s.notes?` · ${s.notes}`:""}</div>
         ${typeLabel?`<div class="sale-type">${typeLabel}</div>`:""}
       </div>
       <div class="sale-qty">${s.quantity}</div>
@@ -641,13 +656,15 @@ function renderSellers(){
   const role=(ME.role||"seller").toLowerCase();
   let sellers=role==="admin"
     ?AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active")
-    :AGENTS.filter(a=>a.manager_id===ME.agent_id&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active");
+    :AGENTS.filter(a=>{
+      const mgrs=(a.manager_id||"").split(",").map(x=>x.trim());
+      return mgrs.includes(ME.agent_id)&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active";
+    });
   const fw=$("sellers-filter");
   if(role==="admin"){
-    const managers=AGENTS.filter(a=>(a.role||"").toLowerCase()==="manager");
+    const teams=[...new Set(AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller").map(a=>a.team||"").filter(Boolean))];
     fw.innerHTML=`<div class="chip on" onclick="filterSellers('all',this)">All</div>`+
-      managers.map(m=>`<div class="chip" onclick="filterSellers('${m.agent_id}',this)">${m.name}</div>`).join("")+
-      `<div class="chip" onclick="filterSellers('none',this)">No manager</div>`;
+      teams.map(t=>`<div class="chip" onclick="filterSellers('${t}',this)">${t}</div>`).join("");
   } else { fw.innerHTML=""; }
   renderSellerCards(sellers);
 }
@@ -657,11 +674,11 @@ function filterSellers(f,el){
   const role=(ME.role||"seller").toLowerCase();
   let sellers=role==="admin"
     ?AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active")
-    :AGENTS.filter(a=>a.manager_id===ME.agent_id&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active");
-  if(f!=="all"){
-    if(f==="none") sellers=sellers.filter(a=>!a.manager_id||a.manager_id==="");
-    else sellers=sellers.filter(a=>a.manager_id===f);
-  }
+    :AGENTS.filter(a=>{
+      const mgrs=(a.manager_id||"").split(",").map(x=>x.trim());
+      return mgrs.includes(ME.agent_id)&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active";
+    });
+  if(f!=="all") sellers=sellers.filter(a=>(a.team||"")===f);
   renderSellerCards(sellers);
 }
 
@@ -669,14 +686,13 @@ function renderSellerCards(sellers){
   const wrap=$("sellers-list");
   if(!sellers.length){wrap.innerHTML=`<div class="empty">No sellers found.</div>`;return;}
   wrap.innerHTML=sellers.map(a=>{
-    const sold=totalSold(a.agent_id), rate=getRate(a.agent_id,sold);
+    const sold=totalSold(a.agent_id);
     const earned=commissionEarned(a.agent_id), open=outstanding(a.agent_id);
-    const mgr=AGENTS.find(m=>m.agent_id===a.manager_id);
     const payStatus=open<=0?"b-paid":earned>0?"b-partial":"b-pending";
     const payLabel=open<=0?"Settled":earned>0?"Outstanding":"No sales";
     return `<div class="seller-card" onclick="openDetail('${a.agent_id}')">
       <div class="seller-card-top"><div class="seller-name">${a.name}</div><div class="badge ${payStatus}">${payLabel}</div></div>
-      <div class="seller-meta">${sold} tickets · €${rate.toFixed(2)}/ticket${mgr?` · ${mgr.name}`:""}</div>
+      <div class="seller-meta">${sold} tickets · ${a.team||""}</div>
       <div class="seller-amounts">
         <div class="sa"><div class="sa-lbl">Earned</div><div class="sa-val" style="color:var(--sun)">${fmt(earned)}</div></div>
         <div class="sa"><div class="sa-lbl">Paid</div><div class="sa-val" style="color:var(--green)">${fmt(earned-open)}</div></div>
@@ -700,40 +716,44 @@ $("detail-back").onclick=()=>{
 
 function renderDetail(agentId){
   const agent=AGENTS.find(a=>a.agent_id===agentId)||{};
-  const sold=totalSold(agentId), rate=getRate(agentId,sold);
+  const sold=totalSold(agentId), online=onlineSold(agentId), offline=offlineSold(agentId);
   const earned=commissionEarned(agentId), paid=totalPaid(agentId), open=outstanding(agentId);
-  const curMin=currentTierMin(agentId);
-  const agentTiers=TIERS.filter(t=>t.agent_id===agentId).sort((a,b)=>parseInt(a.min_tickets)-parseInt(b.min_tickets));
   const isAdmin=(ME.role||"").toLowerCase()==="admin";
-  const tiersHtml=agentTiers.length?`
+  const offTiers=getTiers(agentId,"offline"), onTiers=getTiers(agentId,"online");
+  const curOffMin=currentTierMinFor(agentId,"offline"), curOnMin=currentTierMinFor(agentId,"online");
+  const offRate=getRate(agentId,offline,"offline"), onRate=getRate(agentId,online,"online");
+
+  const tierTableHtml = (tiers, sold2, curMin) => tiers.length ? `
     <table class="tier-table">
       <thead><tr><th>Min tickets</th><th>Rate/ticket</th><th>Status</th></tr></thead>
-      <tbody>${agentTiers.map(t=>{
-        const isCurrent=parseInt(t.min_tickets)===curMin, isActive=sold>=parseInt(t.min_tickets);
+      <tbody>${tiers.map(t=>{
+        const isCurrent=parseInt(t.min_tickets)===curMin, isActive=sold2>=parseInt(t.min_tickets);
         return `<tr class="${isCurrent?"tier-active-row":""}">
-          <td>${t.min_tickets}+</td><td>€${parseFloat(t.commission_per_ticket).toFixed(2)}</td>
+          <td>${t.min_tickets}+</td><td>${parseFloat(t.commission_per_ticket).toFixed(3)}</td>
           <td><span class="badge ${isCurrent?"b-partial":isActive?"b-paid":"b-pending"}">${isCurrent?"Active":isActive?"Passed":"Locked"}</span></td>
         </tr>`;
       }).join("")}</tbody>
-    </table>`
-    :`<div class="empty" style="padding:16px;">No tiers set. ${isAdmin?`<span style="color:var(--sun);cursor:pointer;" onclick="openTiers('${agentId}')">Add tiers →</span>`:""}</div>`;
+    </table>` : `<div class="empty" style="padding:12px;">No tiers set.</div>`;
+
   $("detail-content").innerHTML=`
     <div class="detail-hero">
       <div class="detail-name">${agent.name}</div>
-      <div class="detail-sub">${sold} tickets this season · €${rate.toFixed(2)}/ticket</div>
+      <div class="detail-sub">${sold} tickets · ${agent.team||""}</div>
       <div class="detail-amounts">
         <div class="da"><div class="da-lbl">Earned</div><div class="da-val o">${fmt(earned)}</div></div>
         <div class="da"><div class="da-lbl">Paid</div><div class="da-val g">${fmt(paid)}</div></div>
         <div class="da"><div class="da-lbl">Open</div><div class="da-val a">${fmt(open)}</div></div>
       </div>
-      ${tierBarHTML(agentId)}
+      ${tierBarHTML(agentId,"offline")}
+      ${tierBarHTML(agentId,"online")}
     </div>
     ${isAdmin?`<div style="display:flex;gap:8px;margin-bottom:12px;">
       <button class="btn-ghost btn-sm" onclick="openSale('${agentId}')">+ Add sale</button>
       <button class="btn-ghost btn-sm" onclick="openPay('${agentId}')">+ Payment</button>
       <button class="btn-ghost btn-sm" onclick="openTiers('${agentId}')">Edit tiers</button>
     </div>`:""}
-    <div class="section-block"><div class="block-title">Commission tiers</div>${tiersHtml}</div>
+    <div class="section-block"><div class="block-title">Offline tiers · ${offRate.toFixed(3)}/ticket</div>${tierTableHtml(offTiers,offline,curOffMin)}</div>
+    <div class="section-block"><div class="block-title">Online tiers · ${onRate.toFixed(3)}/ticket</div>${tierTableHtml(onTiers,online,curOnMin)}</div>
     <div class="section-block"><div class="block-title">Ticket sales</div>${renderSalesForAgent(agentId)}</div>
     <div class="section-block"><div class="block-title">Payments</div>${renderPaymentsForAgent(agentId)}</div>`;
 }
@@ -760,20 +780,12 @@ function renderAdmin(){
       </div>
     </div>
     <div class="section-block">
-      <div class="block-title">Events (${EVENTS.length})</div>
-      ${EVENTS.length?EVENTS.sort((a,b)=>new Date(b.event_date)-new Date(a.event_date)).map(e=>`
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border2);font-size:13px;">
-          <div><div style="font-weight:600;">${e.event_name}</div><div style="font-size:11px;color:var(--muted);">${fmtDate(e.event_date)} · ${e.venue||""}</div></div>
-          <div style="font-size:11px;color:var(--muted);">${SALES.filter(s=>s.event_id===e.event_id&&(s.status||"active")!=="deleted").reduce((s,x)=>s+parseInt(x.quantity||0),0)} tkts</div>
-        </div>`).join(""):`<div class="empty">No events yet.</div>`}
-    </div>
-    <div class="section-block">
       <div class="block-title">All agents</div>
       ${AGENTS.filter(a=>(a.status||"").toLowerCase()==="active").map(a=>`
         <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border2);">
           <div>
             <div style="font-size:13px;font-weight:600;">${a.name}</div>
-            <div style="font-size:11px;color:var(--muted);">${a.email} · <span class="badge ${{admin:"b-admin",manager:"b-manager",seller:"b-pending"}[(a.role||"seller").toLowerCase()]||"b-pending"}">${a.role||"seller"}</span></div>
+            <div style="font-size:11px;color:var(--muted);">${a.email||""} · <span class="badge ${{admin:"b-admin",manager:"b-manager",seller:"b-pending"}[(a.role||"seller").toLowerCase()]||"b-pending"}">${a.role||"seller"}</span>${a.team?` · ${a.team}`:""}</div>
           </div>
           ${(a.role||"").toLowerCase()==="seller"?`<button class="btn-ghost btn-sm" onclick="openDetail('${a.agent_id}')">View</button>`:""}
         </div>`).join("")}
@@ -784,19 +796,18 @@ function openSale(agentId){
   const agent=AGENTS.find(a=>a.agent_id===agentId)||{};
   $("ms-agent-id").value=agentId;
   $("ms-sub").textContent=`Recording tickets for ${agent.name}`;
-  $("ms-event").innerHTML=EVENTS.map(e=>`<option value="${e.event_id}">${e.event_name} · ${fmtDate(e.event_date)}</option>`).join("");
   $("ms-qty").value=""; $("ms-date").value=today(); $("ms-notes").value=""; $("ms-msg").textContent="";
   openM("m-sale");
 }
 
 $("ms-save").onclick=async()=>{
-  const agentId=$("ms-agent-id").value, eventId=$("ms-event").value;
+  const agentId=$("ms-agent-id").value;
   const qty=parseInt($("ms-qty").value)||0, type=$("ms-type").value;
   const date=$("ms-date").value, notes=$("ms-notes").value;
   const msg=$("ms-msg"), btn=$("ms-save");
   if(!qty||qty<1){msg.textContent="Enter a valid quantity.";return;}
   msg.textContent="Saving…"; btn.disabled=true;
-  const entry={sale_id:genId("S"),agent_id:agentId,event_id:eventId,quantity:qty,type,date,notes,status:"active",created_at:new Date().toISOString()};
+  const entry={sale_id:genId("S"),agent_id:agentId,quantity:qty,type,date,notes,status:"active",created_at:new Date().toISOString()};
   try{
     await post({action:"add_sale",...entry});
     SALES.push(entry); closeM("m-sale"); renderDetail(agentId); msg.textContent="";
@@ -834,18 +845,22 @@ function openTiers(agentId){
   $("mt-sub").textContent=`Commission tiers for ${agent.name}`;
   const existing=TIERS.filter(t=>t.agent_id===agentId).sort((a,b)=>parseInt(a.min_tickets)-parseInt(b.min_tickets));
   $("mt-rows").innerHTML="";
-  if(existing.length) existing.forEach(t=>addTierRow(t.min_tickets,t.commission_per_ticket,t.tier_id));
-  else addTierRow(0,"","");
+  if(existing.length) existing.forEach(t=>addTierRow(t.min_tickets,t.commission_per_ticket,t.tier_id,t.type));
+  else { addTierRow(0,"","","offline"); addTierRow(0,"","","online"); }
   $("mt-msg").textContent=""; openM("m-tiers");
 }
 
-function addTierRow(min="",rate="",tierId=""){
+function addTierRow(min="",rate="",tierId="",type="offline"){
   const div=document.createElement("div");
-  div.style.cssText="display:flex;gap:8px;align-items:center;margin-bottom:8px;";
+  div.style.cssText="display:flex;gap:6px;align-items:center;margin-bottom:8px;";
   div.innerHTML=`
     <input type="hidden" class="tr-id" value="${tierId}">
-    <input type="number" class="inp tr-min" placeholder="Min tickets" value="${min}" style="flex:1;margin-bottom:0;">
-    <input type="number" class="inp tr-rate" placeholder="€/ticket" step="0.01" value="${rate}" style="flex:1;margin-bottom:0;">
+    <select class="inp tr-type" style="flex:0.8;margin-bottom:0;padding:10px 8px;">
+      <option value="offline"${type==="offline"?" selected":""}>Offline</option>
+      <option value="online"${type==="online"?" selected":""}>Online</option>
+    </select>
+    <input type="number" class="inp tr-min" placeholder="Min" value="${min}" style="flex:1;margin-bottom:0;">
+    <input type="number" class="inp tr-rate" placeholder="Rate" step="0.001" value="${rate}" style="flex:1;margin-bottom:0;">
     <button onclick="this.parentNode.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">×</button>`;
   $("mt-rows").appendChild(div);
 }
@@ -857,9 +872,10 @@ $("mt-save").onclick=async()=>{
   for(const row of rows){
     const min=parseInt(row.querySelector(".tr-min").value);
     const rate=parseFloat(row.querySelector(".tr-rate").value);
+    const type=row.querySelector(".tr-type").value;
     const id=row.querySelector(".tr-id").value||genId("T");
     if(isNaN(min)||isNaN(rate)){msg.textContent="Fill in all tier fields.";return;}
-    newTiers.push({tier_id:id,agent_id:agentId,min_tickets:min,commission_per_ticket:rate.toFixed(4)});
+    newTiers.push({tier_id:id,agent_id:agentId,type,min_tickets:min,commission_per_ticket:rate.toFixed(4)});
   }
   msg.textContent="Saving…"; btn.disabled=true;
   try{
@@ -874,10 +890,11 @@ $("ma-save").onclick=async()=>{
   const name=$("ma-name").value.trim(), email=$("ma-email").value.trim();
   const code=$("ma-code").value.trim(), role=$("ma-role").value;
   const mgrId=$("ma-manager").value, season=$("ma-season").value.trim();
+  const team=$("ma-team").value;
   const msg=$("ma-msg"), btn=$("ma-save");
   if(!name||!email||!code){msg.textContent="Fill in name, email and code.";return;}
   msg.textContent="Creating…"; btn.disabled=true;
-  const entry={agent_id:genId("A"),name,email,access_code:code,role,manager_id:mgrId,season,status:"active",created_at:new Date().toISOString()};
+  const entry={agent_id:genId("A"),name,email,access_code:code,role,manager_id:mgrId,team,season,status:"active",created_at:new Date().toISOString()};
   try{
     await post({action:"add_agent",...entry});
     AGENTS.push(entry); closeM("m-agent"); renderAdmin();
@@ -909,7 +926,6 @@ function openM(id){
 function closeM(id){$(id).classList.remove("open");}
 document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
 
-
 function renderProfile(){
   const wrap=$("profile-content");
   const role=(ME.role||"seller").toLowerCase();
@@ -923,17 +939,20 @@ function renderProfile(){
         <span class="badge ${roleBadge}">${roleLabel}</span>
         <span style="font-size:12px;color:var(--muted);">${ME.email||""}</span>
       </div>
-      <div class="stat-row" style="grid-template-columns:1fr;">
-        <div class="stat-box" style="padding:14px;">
-          <div class="stat-box-lbl" style="margin-bottom:6px;">Season</div>
-          <div style="font-size:15px;font-weight:600;">${ME.season||"2025"}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="stat-box" style="padding:12px;">
+          <div class="stat-box-lbl" style="margin-bottom:4px;">Team</div>
+          <div style="font-size:14px;font-weight:600;">${ME.team||"—"}</div>
+        </div>
+        <div class="stat-box" style="padding:12px;">
+          <div class="stat-box-lbl" style="margin-bottom:4px;">Season</div>
+          <div style="font-size:14px;font-weight:600;">${ME.season||"2026"}</div>
         </div>
       </div>
     </div>
     <div style="margin-top:16px;">
       <button class="btn-ghost" style="width:100%;color:var(--red);" onclick="doLogout()">Log out</button>
-    </div>
-  `;
+    </div>`;
 }
 
 window.addEventListener("DOMContentLoaded",async()=>{
@@ -942,39 +961,26 @@ window.addEventListener("DOMContentLoaded",async()=>{
   else{$("page-login").style.display="flex";$("page-login").classList.add("show");}
 });
 
-// PULL TO REFRESH
 (function(){
-  let startY=0, pulling=false, triggered=false;
+  let startY=0,pulling=false,triggered=false;
   const ind=document.getElementById('ptr-indicator');
   const lbl=document.getElementById('ptr-label');
   const THRESHOLD=80;
-
-  document.addEventListener('touchstart', e=>{
-    if(window.scrollY===0) { startY=e.touches[0].clientY; pulling=true; triggered=false; }
-  },{passive:true});
-
-  document.addEventListener('touchmove', e=>{
+  document.addEventListener('touchstart',e=>{if(window.scrollY===0){startY=e.touches[0].clientY;pulling=true;triggered=false;}},{passive:true});
+  document.addEventListener('touchmove',e=>{
     if(!pulling) return;
-    const dist=e.touches[0].clientY - startY;
-    if(dist>0 && window.scrollY===0){
-      ind.classList.add('visible');
-      ind.classList.remove('releasing');
-      if(dist>=THRESHOLD){
-        lbl.textContent='Release to refresh';
-        triggered=true;
-      } else {
-        lbl.textContent='Pull to refresh';
-        triggered=false;
-      }
+    const dist=e.touches[0].clientY-startY;
+    if(dist>0&&window.scrollY===0){
+      ind.classList.add('visible');ind.classList.remove('releasing');
+      if(dist>=THRESHOLD){lbl.textContent='Release to refresh';triggered=true;}
+      else{lbl.textContent='Pull to refresh';triggered=false;}
     }
   },{passive:true});
-
-  document.addEventListener('touchend', async e=>{
+  document.addEventListener('touchend',async e=>{
     if(!pulling) return;
     pulling=false;
     if(triggered){
-      ind.classList.add('releasing');
-      lbl.textContent='Refreshing…';
+      ind.classList.add('releasing');lbl.textContent='Refreshing…';
       await loadData();
       const active=document.querySelector('.sec.on');
       if(active){
@@ -987,12 +993,9 @@ window.addEventListener("DOMContentLoaded",async()=>{
         if(id==='s-profile') renderProfile();
       }
     }
-    ind.classList.remove('visible','releasing');
-    lbl.textContent='Pull to refresh';
-    triggered=false;
+    ind.classList.remove('visible','releasing');lbl.textContent='Pull to refresh';triggered=false;
   },{passive:true});
 })();
-
 </script>
 </body>
 </html>
