@@ -1,1039 +1,185 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Unlimited Albufeira — Commission Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --sun:#F97316;--sun2:#FBBF24;--dark:#09080A;--card:#1C1A24;--card2:#232130;
-  --border:rgba(249,115,22,0.15);--border2:rgba(255,255,255,0.06);
-  --text:#F0EBE3;--muted:rgba(240,235,227,0.42);
-  --green:#4ADE80;--green-d:rgba(74,222,128,0.12);
-  --amber:#FCD34D;--amber-d:rgba(252,211,77,0.12);
-  --red:#F87171;--red-d:rgba(248,113,113,0.12);
-  --blue:#60A5FA;--blue-d:rgba(96,165,250,0.12);
-  --r:12px;--r-lg:18px;--g:linear-gradient(135deg,#F97316,#FBBF24);
-  --font:'Calibri','Nunito',sans-serif;
-}
-body{background:var(--dark);color:var(--text);min-height:100vh;font-family:var(--font);}
-#page-login{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden;}
-#page-login.show{display:flex;}
-#page-app{display:none;}
-#page-app.show{display:block;}
-.login-orb{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.15) 0%,transparent 70%);top:-100px;left:50%;transform:translateX(-50%);pointer-events:none;}
-.sun-wrap{position:relative;margin-bottom:20px;}
-.sun-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.25) 0%,transparent 70%);pointer-events:none;}
-.login-eyebrow{font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:500;}
-.login-title{font-size:28px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px;}
-.login-title span{background:var(--g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.login-sub{font-size:12px;color:var(--muted);margin-bottom:32px;letter-spacing:.05em;}
-.login-box{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 22px;position:relative;}
-.login-box::before{content:"";position:absolute;top:0;left:24px;right:24px;height:1px;background:var(--g);opacity:.6;}
-.lbl{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.18em;font-weight:600;color:var(--muted);margin-bottom:6px;}
-.inp{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:999px;padding:12px 18px;font-size:14px;color:var(--text);margin-bottom:14px;transition:border-color .2s;-webkit-appearance:none;font-family:var(--font);}
-.inp::placeholder{color:rgba(255,255,255,.18);}
-.inp:focus{outline:none;border-color:var(--sun);}
-select.inp{cursor:pointer;}
-select.inp option{background:#1C1A24;color:#F0EBE3;}
-textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
-.btn-primary{width:100%;padding:13px;border-radius:999px;background:var(--g);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;font-family:var(--font);}
-.btn-primary:hover{opacity:.87;}
-.btn-primary:active{transform:scale(.97);}
-.btn-ghost{background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--text);border-radius:999px;padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;font-family:var(--font);}
-.btn-ghost:hover{background:rgba(255,255,255,.1);}
-.btn-sm{padding:7px 14px;font-size:12px;width:auto;}
-.form-msg{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;min-height:16px;}
-.app-wrap{max-width:480px;margin:0 auto;padding-bottom:76px;}
-.app-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(9,8,10,.92);z-index:100;backdrop-filter:blur(16px);}
-.header-left{display:flex;align-items:center;gap:10px;}
-.header-brand{font-size:13px;font-weight:700;}
-.header-brand span{background:var(--g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.header-user{font-size:11px;color:var(--muted);}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,12,17,.97);border-top:1px solid var(--border);display:flex;z-index:200;max-width:480px;margin:0 auto;}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 0 10px;cursor:pointer;font-size:9px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;border:none;background:none;gap:4px;transition:color .2s;font-family:var(--font);font-weight:600;}
-.nav-item.on{color:var(--sun);}
-.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--sun);margin-top:2px;opacity:0;transition:opacity .2s;}
-.nav-item.on .nav-dot{opacity:1;}
-.sec{display:none;padding:14px;}
-.sec.on{display:block;}
-.sec-title{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px;}
-.dash-hero{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:12px;position:relative;overflow:hidden;}
-.dash-hero::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--g);}
-.dash-hero-greeting{font-size:11px;color:var(--sun);margin-bottom:4px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
-.dash-hero-name{font-size:22px;font-weight:800;margin-bottom:16px;}
-.dash-hero-name span{background:var(--g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.stat-box{background:var(--card2);border-radius:var(--r);padding:12px 14px;}
-.stat-box-val{font-size:20px;font-weight:700;line-height:1;margin-bottom:3px;}
-.stat-box-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:500;}
-.stat-box-val.orange{color:var(--sun);}
-.stat-box-val.green{color:var(--green);}
-.stat-box-val.amber{color:var(--amber);}
-.tier-bar-wrap{margin-top:16px;padding-top:14px;border-top:1px solid var(--border2);}
-.tier-bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
-.tier-bar-label{font-size:11px;color:var(--muted);}
-.tier-bar-rate{font-size:13px;font-weight:700;color:var(--sun);}
-.tier-track{background:rgba(255,255,255,.07);border-radius:999px;height:10px;overflow:hidden;}
-.tier-fill{height:100%;border-radius:999px;background:var(--g);transition:width .5s cubic-bezier(.4,0,.2,1);}
-.tier-milestones{display:flex;justify-content:space-between;margin-top:5px;}
-.tier-mile{font-size:10px;color:var(--muted);}
-.seller-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .15s,transform .1s;}
-.seller-card:hover{border-color:var(--border);transform:translateY(-1px);}
-.seller-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.seller-name{font-size:14px;font-weight:600;}
-.seller-meta{font-size:12px;color:var(--muted);}
-.seller-amounts{display:flex;gap:14px;margin-top:6px;}
-.sa{display:flex;flex-direction:column;gap:2px;}
-.sa-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:500;}
-.sa-val{font-weight:700;font-size:13px;}
-.detail-hero{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;margin-bottom:10px;position:relative;overflow:hidden;}
-.detail-hero::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--g);}
-.detail-name{font-size:18px;font-weight:800;margin-bottom:2px;}
-.detail-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
-.detail-amounts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
-.da{background:var(--card2);border-radius:var(--r);padding:10px 12px;}
-.da-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;font-weight:500;}
-.da-val{font-size:16px;font-weight:700;}
-.da-val.g{color:var(--green);}
-.da-val.a{color:var(--amber);}
-.da-val.o{color:var(--sun);}
-.tier-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px;}
-.tier-table th{font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);font-weight:600;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border2);}
-.tier-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.03);font-size:13px;}
-.tier-table tr:last-child td{border-bottom:none;}
-.tier-active-row td{color:var(--sun);font-weight:600;}
-.tier-active-row td:first-child::before{content:"▶ ";font-size:10px;}
-.sale-entry{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-.sale-left{font-size:13px;}
-.sale-event{font-weight:600;margin-bottom:2px;}
-.sale-date{font-size:11px;color:var(--muted);}
-.sale-type{font-size:10px;color:var(--muted);margin-top:2px;}
-.sale-qty{font-size:18px;font-weight:800;color:var(--sun);}
-.payment-entry{background:var(--card);border:1px solid var(--green-d);border-radius:var(--r);padding:12px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-.payment-amount{font-size:16px;font-weight:700;color:var(--green);}
-.payment-date{font-size:11px;color:var(--muted);}
-.badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.07em;}
-.b-pending{background:var(--amber-d);color:var(--amber);}
-.b-paid{background:var(--green-d);color:var(--green);}
-.b-partial{background:rgba(249,115,22,.15);color:var(--sun);}
-.b-admin{background:var(--blue-d);color:var(--blue);}
-.b-manager{background:rgba(167,139,250,.15);color:#A78BFA;}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:flex-end;justify-content:center;}
-.overlay.open{display:flex;}
-.modal{background:#1C1A24;border-radius:20px 20px 0 0;padding:22px 20px 40px;width:100%;max-width:480px;border-top:2px solid var(--sun);animation:up .25s ease;}
-@keyframes up{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-hd{font-size:16px;font-weight:700;margin-bottom:3px;}
-.modal-sub{font-size:12px;color:var(--muted);margin-bottom:18px;}
-.modal-x{float:right;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;margin-top:-2px;}
-.modal-divider{height:1px;background:var(--border2);margin:14px 0;}
-.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer;margin-bottom:14px;border:none;background:none;padding:0;font-family:var(--font);font-weight:500;}
-.back-btn:hover{color:var(--text);}
-.empty{text-align:center;padding:32px 20px;color:var(--muted);font-size:13px;}
-.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
-.chip{font-size:11px;padding:5px 12px;border-radius:999px;border:1px solid var(--border2);background:rgba(255,255,255,.04);cursor:pointer;color:var(--muted);transition:all .15s;font-family:var(--font);font-weight:600;}
-.chip.on{background:rgba(249,115,22,.15);border-color:var(--sun);color:var(--sun);}
-.section-block{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:10px;}
-.block-title{font-size:11px;font-weight:700;margin-bottom:10px;color:var(--text);text-transform:uppercase;letter-spacing:.08em;}
-.collapsible-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:2px 0;}
-.collapsible-arrow{font-size:12px;color:var(--muted);transition:transform .25s;display:inline-block;}
-.collapsible-arrow.open{transform:rotate(180deg);}
-.collapsible-body{overflow:hidden;max-height:0;transition:max-height .3s ease;}
-.collapsible-body.open{max-height:600px;}
-.collapsible-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:2px 0;}
-.collapsible-arrow{font-size:12px;color:var(--muted);transition:transform .25s;display:inline-block;}
-.collapsible-arrow.open{transform:rotate(180deg);}
-.collapsible-body{overflow:hidden;max-height:0;transition:max-height .35s ease;}
-.collapsible-body.open{max-height:800px;}
-#ptr-indicator{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;height:0;overflow:hidden;transition:height .2s ease;background:var(--dark);}
-#ptr-indicator.visible{height:72px;}
-#ptr-indicator.releasing{height:72px;}
-#ptr-indicator.releasing svg{animation:spin-sun .6s linear infinite;}
-#ptr-label{font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;}
-@keyframes spin-sun{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-</style>
-</head>
-<body>
+const SHEET_ID = "19sdMQkZ4tkzRE1AutLk06OuvkrGOeboDMh4Rn8S_0U8";
 
-<div id="ptr-indicator">
-  <svg width="32" height="32" viewBox="0 0 80 64" fill="none">
-    <defs><linearGradient id="ptg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F97316"/><stop offset="1" stop-color="#FBBF24"/></linearGradient></defs>
-    <line x1="40" y1="5" x2="40" y2="0" stroke="url(#ptg)" stroke-width="3" stroke-linecap="round"/>
-    <line x1="53" y1="9" x2="56" y2="5" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="27" y1="9" x2="24" y2="5" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="64" y1="20" x2="68" y2="17" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="16" y1="20" x2="12" y2="17" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M10 40 A30 30 0 0 1 70 40" fill="url(#ptg)"/>
-    <line x1="2" y1="40" x2="78" y2="40" stroke="url(#ptg)" stroke-width="2.5" stroke-linecap="round"/>
-  </svg>
-  <div id="ptr-label">Pull to refresh</div>
-</div>
+function ss()  { return SpreadsheetApp.openById(SHEET_ID); }
+function tab(name) { return ss().getSheetByName(name); }
 
-<div id="page-login">
-  <div class="login-orb"></div>
-  <div class="sun-wrap">
-    <div class="sun-glow"></div>
-    <svg width="80" height="64" viewBox="0 0 80 64" fill="none">
-      <defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F97316"/><stop offset="1" stop-color="#FBBF24"/></linearGradient></defs>
-      <line x1="40" y1="5" x2="40" y2="0" stroke="url(#sg)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="53" y1="9" x2="56" y2="5" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="27" y1="9" x2="24" y2="5" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="64" y1="20" x2="68" y2="17" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="16" y1="20" x2="12" y2="17" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M10 40 A30 30 0 0 1 70 40" fill="url(#sg)"/>
-      <line x1="2" y1="40" x2="78" y2="40" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round"/>
-      <line x1="6" y1="48" x2="74" y2="48" stroke="rgba(249,115,22,0.4)" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="12" y1="55" x2="68" y2="55" stroke="rgba(249,115,22,0.2)" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-  </div>
-  <div class="login-eyebrow">Albufeira · Portugal</div>
-  <div class="login-title"><span>Unlimited</span></div>
-  <div class="login-sub">Agent Commission Portal</div>
-  <div class="login-box">
-    <label class="lbl">Email</label>
-    <input type="email" class="inp" id="l-email" placeholder="your@email.com">
-    <label class="lbl">Access code</label>
-    <input type="password" class="inp" id="l-code" placeholder="••••••••">
-    <button class="btn-primary" id="l-btn">Sign in</button>
-    <div class="form-msg" id="l-msg">Enter your email and access code.</div>
-  </div>
-</div>
-
-<div id="page-app">
-  <div class="app-wrap">
-    <div class="app-header">
-      <div class="header-left">
-        <svg width="22" height="18" viewBox="0 0 80 64" fill="none">
-          <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F97316"/><stop offset="1" stop-color="#FBBF24"/></linearGradient></defs>
-          <line x1="40" y1="4" x2="40" y2="0" stroke="url(#hg)" stroke-width="4" stroke-linecap="round"/>
-          <line x1="54" y1="8" x2="57" y2="4.5" stroke="url(#hg)" stroke-width="3" stroke-linecap="round"/>
-          <line x1="26" y1="8" x2="23" y2="4.5" stroke="url(#hg)" stroke-width="3" stroke-linecap="round"/>
-          <path d="M10 40 A30 30 0 0 1 70 40" fill="url(#hg)"/>
-          <line x1="2" y1="40" x2="78" y2="40" stroke="url(#hg)" stroke-width="3" stroke-linecap="round"/>
-        </svg>
-        <div class="header-brand"><span>Unlimited</span> Albufeira</div>
-      </div>
-      <div class="header-user" id="h-user" style="display:none;"></div>
-    </div>
-    <div class="sec on" id="s-dash"><div style="padding-top:12px;" id="dash-content"></div></div>
-    <div class="sec" id="s-commission"><div style="padding-top:12px;" id="commission-content"></div></div>
-    <div class="sec" id="s-mysales"><div style="padding-top:12px;" id="mysales-content"></div></div>
-    <div class="sec" id="s-profile"><div style="padding-top:12px;" id="profile-content"></div></div>
-    <div class="sec" id="s-sellers">
-      <div class="chip-row" id="sellers-filter"></div>
-      <div id="sellers-list"></div>
-    </div>
-    <div class="sec" id="s-detail">
-      <button class="back-btn" id="detail-back">← Back</button>
-      <div id="detail-content"></div>
-    </div>
-    <div class="sec" id="s-admin"><div id="admin-content"></div></div>
-  </div>
-  <nav class="bottom-nav" id="bottom-nav"></nav>
-</div>
-
-<!-- MODAL: Sale -->
-<div class="overlay" id="m-sale">
-  <div class="modal">
-    <button class="modal-x" onclick="closeM('m-sale')">×</button>
-    <div class="modal-hd">Add ticket sale</div>
-    <div class="modal-sub" id="ms-sub"></div>
-    <input type="hidden" id="ms-agent-id">
-    <label class="lbl">Type</label>
-    <select class="inp" id="ms-type">
-      <option value="offline">Offline</option>
-      <option value="online">Online</option>
-    </select>
-    <label class="lbl">Tickets sold</label>
-    <input type="number" class="inp" id="ms-qty" placeholder="e.g. 25" min="1">
-    <label class="lbl">Date</label>
-    <input type="date" class="inp" id="ms-date">
-    <label class="lbl">Notes</label>
-    <textarea class="inp" id="ms-notes" placeholder="Optional…"></textarea>
-    <button class="btn-primary" id="ms-save">Add sale</button>
-    <div class="form-msg" id="ms-msg"></div>
-  </div>
-</div>
-
-<!-- MODAL: Payment -->
-<div class="overlay" id="m-pay">
-  <div class="modal">
-    <button class="modal-x" onclick="closeM('m-pay')">×</button>
-    <div class="modal-hd">Record payment</div>
-    <div class="modal-sub" id="mp-sub"></div>
-    <input type="hidden" id="mp-agent-id">
-    <label class="lbl">Amount paid (€)</label>
-    <input type="number" class="inp" id="mp-amount" placeholder="0.00" step="0.01">
-    <label class="lbl">Payment date</label>
-    <input type="date" class="inp" id="mp-date">
-    <label class="lbl">Notes</label>
-    <textarea class="inp" id="mp-notes" placeholder="Optional…"></textarea>
-    <button class="btn-primary" id="mp-save">Record payment</button>
-    <div class="form-msg" id="mp-msg"></div>
-  </div>
-</div>
-
-<!-- MODAL: Tiers -->
-<div class="overlay" id="m-tiers">
-  <div class="modal">
-    <button class="modal-x" onclick="closeM('m-tiers')">×</button>
-    <div class="modal-hd">Edit commission tiers</div>
-    <div class="modal-sub" id="mt-sub"></div>
-    <input type="hidden" id="mt-agent-id">
-    <div id="mt-rows"></div>
-    <button class="btn-ghost btn-sm" onclick="addTierRow()" style="margin-bottom:12px;">+ Add tier</button>
-    <div class="modal-divider"></div>
-    <button class="btn-primary" id="mt-save">Save tiers</button>
-    <div class="form-msg" id="mt-msg"></div>
-  </div>
-</div>
-
-<!-- MODAL: Agent -->
-<div class="overlay" id="m-agent">
-  <div class="modal">
-    <button class="modal-x" onclick="closeM('m-agent')">×</button>
-    <div class="modal-hd">Add agent</div>
-    <div class="modal-sub">Create a new seller, manager or admin</div>
-    <label class="lbl">Name</label>
-    <input type="text" class="inp" id="ma-name" placeholder="Full name">
-    <label class="lbl">Email</label>
-    <input type="email" class="inp" id="ma-email" placeholder="agent@email.com">
-    <label class="lbl">Access code</label>
-    <input type="text" class="inp" id="ma-code" placeholder="e.g. daisy2025">
-    <label class="lbl">Role</label>
-    <select class="inp" id="ma-role">
-      <option value="seller">Seller</option>
-      <option value="manager">Manager</option>
-      <option value="admin">Admin</option>
-    </select>
-    <label class="lbl">Manager (optional)</label>
-    <select class="inp" id="ma-manager"><option value="">— None —</option></select>
-    <label class="lbl">Team</label>
-    <select class="inp" id="ma-team">
-      <option value="Unlimited NL">Unlimited NL</option>
-      <option value="Vida">Vida</option>
-      <option value="Unlimited INT">Unlimited INT</option>
-    </select>
-    <label class="lbl">Season</label>
-    <input type="text" class="inp" id="ma-season" placeholder="e.g. 2026">
-    <button class="btn-primary" id="ma-save">Create agent</button>
-    <div class="form-msg" id="ma-msg"></div>
-  </div>
-</div>
-
-<!-- MODAL: Event -->
-<div class="overlay" id="m-event">
-  <div class="modal">
-    <button class="modal-x" onclick="closeM('m-event')">×</button>
-    <div class="modal-hd">Add event</div>
-    <label class="lbl">Event name</label>
-    <input type="text" class="inp" id="me-name" placeholder="e.g. Sunset Party Vol. 3">
-    <label class="lbl">Date</label>
-    <input type="date" class="inp" id="me-date">
-    <label class="lbl">Venue</label>
-    <input type="text" class="inp" id="me-venue" placeholder="e.g. Rooftop Bar Albufeira">
-    <label class="lbl">Season</label>
-    <input type="text" class="inp" id="me-season" placeholder="e.g. 2026">
-    <button class="btn-primary" id="me-save">Add event</button>
-    <div class="form-msg" id="me-msg"></div>
-  </div>
-</div>
-
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby1HZfKq5zCw-Zw46fb-DRfLvWwZQ4bVPcycpP--SaJM8Mcg3o_zB8QLxb4aaXAtNUG/exec";
-const SHEET_ID   = "19sdMQkZ4tkzRE1AutLk06OuvkrGOeboDMh4Rn8S_0U8";
-const OPEN_URL   = "https://opensheet.elk.sh/" + SHEET_ID;
-
-let ME=null, AGENTS=[], EVENTS=[], SALES=[], PAYMENTS=[], TIERS=[];
-
-const $ = id => document.getElementById(id);
-const fmt = n => "€" + parseFloat(n||0).toFixed(2);
-const fmtDate = d => { if(!d) return "—"; const dt=new Date(d); const dd=String(dt.getDate()).padStart(2,"0"); const mm=String(dt.getMonth()+1).padStart(2,"0"); const yyyy=dt.getFullYear(); return `${dd}.${mm}.${yyyy}`; };
-const genId = pfx => pfx + "-" + Date.now().toString(36).toUpperCase();
-const today = () => new Date().toISOString().slice(0,10);
-const teamLabel = agent => (agent.team||"Unlimited NL") + " Agent";
-
-// ── COMMISSION CALC (split online/offline) ──
-function getTiers(agentId, type) {
-  return TIERS.filter(t => t.agent_id === agentId && (t.type||"").toLowerCase() === type.toLowerCase())
-    .sort((a,b) => parseInt(a.min_tickets) - parseInt(b.min_tickets));
-}
-function getRate(agentId, sold, type) {
-  const tiers = getTiers(agentId, type);
-  if(!tiers.length) return 0;
-  let rate = parseFloat(tiers[0].commission_per_ticket||0);
-  for(const t of tiers){ if(sold >= parseInt(t.min_tickets)) rate = parseFloat(t.commission_per_ticket); }
-  return rate;
-}
-function totalSold(id){ return SALES.filter(s=>s.agent_id===id&&(s.status||"active")!=="deleted").reduce((s,x)=>s+parseInt(x.quantity||0),0); }
-function onlineSold(id){ return SALES.filter(s=>s.agent_id===id&&(s.status||"active")!=="deleted"&&(s.type||"").toLowerCase()==="online").reduce((s,x)=>s+parseInt(x.quantity||0),0); }
-function offlineSold(id){ return SALES.filter(s=>s.agent_id===id&&(s.status||"active")!=="deleted"&&(s.type||"").toLowerCase()==="offline").reduce((s,x)=>s+parseInt(x.quantity||0),0); }
-
-function commissionEarned(id){
-  const on = onlineSold(id);
-  const off = offlineSold(id);
-  return (on * getRate(id, on, "online")) + (off * getRate(id, off, "offline"));
+function sheetToJson(name) {
+  const sheet = tab(name);
+  if(!sheet) return [];
+  const vals = sheet.getDataRange().getValues();
+  if(vals.length < 2) return [];
+  const [headers, ...rows] = vals;
+  return rows.map(row => {
+    const obj = {};
+    headers.forEach((h,i) => obj[String(h).trim()] = row[i] === undefined ? "" : row[i]);
+    return obj;
+  });
 }
 
-function totalPaid(id){ return PAYMENTS.filter(p=>p.agent_id===id&&(p.status||"active")!=="deleted").reduce((s,x)=>s+parseFloat(x.amount||0),0); }
-function outstanding(id){ return Math.max(0, commissionEarned(id) - totalPaid(id)); }
-
-function nextTierFor(agentId, type){
-  const sold = type==="online" ? onlineSold(agentId) : offlineSold(agentId);
-  const tiers = getTiers(agentId, type);
-  for(const t of tiers){ if(parseInt(t.min_tickets) > sold) return {at:parseInt(t.min_tickets), rate:parseFloat(t.commission_per_ticket)}; }
-  return null;
-}
-function currentTierMinFor(agentId, type){
-  const sold = type==="online" ? onlineSold(agentId) : offlineSold(agentId);
-  const tiers = getTiers(agentId, type);
-  let min=0;
-  for(const t of tiers){ if(sold >= parseInt(t.min_tickets)) min = parseInt(t.min_tickets); }
-  return min;
+function appendRow(sheetName, obj) {
+  const sheet = tab(sheetName);
+  const headers = sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
+  sheet.appendRow(headers.map(h => obj[h] !== undefined ? obj[h] : ""));
 }
 
-async function fetchSheet(tab){ const r=await fetch(OPEN_URL+"/"+encodeURIComponent(tab)); return r.json(); }
-async function post(body){ return fetch(SCRIPT_URL+"?"+new URLSearchParams(body)); }
-async function loadData(){
-  [AGENTS,EVENTS,SALES,PAYMENTS,TIERS]=await Promise.all([
-    fetchSheet("AGENTS"),fetchSheet("EVENTS"),fetchSheet("TICKET_SALES"),fetchSheet("PAYMENTS"),fetchSheet("TIERS")
-  ]);
-}
-
-const NAV_ITEMS = {
-  seller:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-commission",icon:"💰",label:"Commission"},{id:"s-mysales",icon:"🎟",label:"My Sales"},{id:"s-profile",icon:"👤",label:"Profile"}],
-  manager: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"My Team"},{id:"s-profile",icon:"👤",label:"Profile"}],
-  admin:   [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"Sellers"},{id:"s-admin",icon:"⚙",label:"Admin"},{id:"s-profile",icon:"👤",label:"Profile"}]
-};
-
-function buildNav(){
-  const role=(ME.role||"seller").toLowerCase();
-  const items=NAV_ITEMS[role]||NAV_ITEMS.seller;
-  $("bottom-nav").innerHTML=items.map(i=>`
-    <button class="nav-item${i.id==="s-dash"?" on":""}" id="nav-${i.id}" onclick="goSec('${i.id}')">
-      <span style="font-size:17px;">${i.icon}</span>${i.label}
-      <div class="nav-dot"></div>
-    </button>`).join("");
-}
-
-function goSec(id){
-  document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("on"));
-  $(id).classList.add("on");
-  const btn=$("nav-"+id); if(btn) btn.classList.add("on");
-  if(id==="s-dash") renderDash();
-  if(id==="s-commission") renderCommission();
-  if(id==="s-mysales") renderMySales();
-  if(id==="s-profile") renderProfile();
-  if(id==="s-sellers") renderSellers();
-  if(id==="s-admin") renderAdmin();
-}
-
-$("l-btn").onclick = async () => {
-  const email=$("l-email").value.trim().toLowerCase();
-  const code=$("l-code").value.trim();
-  const msg=$("l-msg");
-  if(!email||!code){msg.textContent="Please fill in both fields.";return;}
-  msg.textContent="Checking…";
-  try {
-    const agents=await fetchSheet("AGENTS");
-    const match=agents.find(a=>(a.email||"").trim().toLowerCase()===email&&(a.access_code||"").trim()===code&&(a.status||"").toLowerCase()==="active");
-    if(!match){msg.textContent="Incorrect details.";return;}
-    ME=match; localStorage.setItem("ua2_me",JSON.stringify(match)); await boot();
-  } catch(e){msg.textContent="Connection error. Try again.";}
-};
-
-function doLogout(){
-  localStorage.removeItem("ua2_me"); ME=null;
-  $("page-app").style.display="none"; $("page-app").classList.remove("show");
-  $("page-login").style.display="flex"; $("page-login").classList.add("show");
-}
-
-async function boot(){
-  $("page-login").classList.remove("show"); $("page-login").style.display="none";
-  $("page-app").style.display="block"; $("page-app").classList.add("show");
-  $("h-user").textContent=ME.name;
-  buildNav(); await loadData(); renderDash();
-}
-
-function tierBarHTML(agentId, type){
-  const sold = type==="online" ? onlineSold(agentId) : offlineSold(agentId);
-  const nt = nextTierFor(agentId, type);
-  const curMin = currentTierMinFor(agentId, type);
-  const rate = getRate(agentId, sold, type);
-  const pct = nt ? Math.min(Math.round(((sold-curMin)/(nt.at-curMin))*100),100) : 100;
-  return `<div class="tier-bar-wrap">
-    <div class="tier-bar-top">
-      <div class="tier-bar-label">${type.charAt(0).toUpperCase()+type.slice(1)}: ${nt?`${sold} / ${nt.at} tickets`:"Race to the next tier"}</div>
-      <div class="tier-bar-rate">${nt?`Next: ${nt.rate.toFixed(3)}/ticket`:`${rate.toFixed(3)}/ticket`}</div>
-    </div>
-    <div class="tier-track"><div class="tier-fill" style="width:${pct}%;"></div></div>
-    ${nt?`<div class="tier-milestones"><span class="tier-mile">${curMin}</span><span class="tier-mile">${nt.at}</span></div>`:""}
-  </div>`;
-}
-
-function renderDash(){
-  const role=(ME.role||"seller").toLowerCase();
-  const wrap=$("dash-content");
-  if(role==="seller"){
-    const sold=totalSold(ME.agent_id), online=onlineSold(ME.agent_id), offline=offlineSold(ME.agent_id);
-    const earned=commissionEarned(ME.agent_id);
-    const paid=totalPaid(ME.agent_id), open=outstanding(ME.agent_id);
-    wrap.innerHTML=`
-      <div class="dash-hero">
-        <div class="dash-hero-greeting">${teamLabel(ME)}</div>
-        <div class="dash-hero-name" style="margin-bottom:10px;font-size:20px;"><span>${ME.name}</span></div>
-        <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${sold}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Total</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${offline}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Offline</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${online}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Online</div>
-          </div>
-        </div>
-        <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:0;">
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:15px;">${fmt(earned)}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Earned</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val amber" style="font-size:15px;">${fmt(open)}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Open</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val green" style="font-size:15px;">${fmt(paid)}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Paid out</div>
-          </div>
-        </div>
-        ${tierBarHTML(ME.agent_id,"offline")}
-        ${tierBarHTML(ME.agent_id,"online")}
-      </div>`;
-  } else {
-    const myAgents=role==="admin"
-      ?AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active")
-      :AGENTS.filter(a=>{
-        const mgrs=(a.manager_id||"").split(",").map(x=>x.trim());
-        return mgrs.includes(ME.agent_id)&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active";
+function updateById(sheetName, idCol, idVal, updates) {
+  const sheet = tab(sheetName);
+  const data  = sheet.getDataRange().getValues();
+  const hdrs  = data[0];
+  const idIdx = hdrs.indexOf(idCol);
+  for(let i=1;i<data.length;i++){
+    if(String(data[i][idIdx]) === String(idVal)){
+      Object.entries(updates).forEach(([k,v])=>{
+        const ci = hdrs.indexOf(k);
+        if(ci>=0) sheet.getRange(i+1,ci+1).setValue(v);
       });
-    const totOnline=myAgents.reduce((s,a)=>s+onlineSold(a.agent_id),0);
-    const totOffline=myAgents.reduce((s,a)=>s+offlineSold(a.agent_id),0);
-    const totTickets=myAgents.reduce((s,a)=>s+totalSold(a.agent_id),0);
-    const totEarned=myAgents.reduce((s,a)=>s+commissionEarned(a.agent_id),0);
-    const totOut=myAgents.reduce((s,a)=>s+outstanding(a.agent_id),0);
-    wrap.innerHTML=`
-      <div class="dash-hero">
-        <div class="dash-hero-greeting">${teamLabel(ME)}</div>
-        <div class="dash-hero-name" style="margin-bottom:10px;font-size:20px;"><span>${ME.name}</span></div>
-        <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;">
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${totTickets}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Total</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${totOffline}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Offline</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${totOnline}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Online</div>
-          </div>
-        </div>
-        <div class="stat-row" style="grid-template-columns:1fr 1fr 1fr;gap:6px;">
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val orange" style="font-size:20px;">${myAgents.length}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">${role==="admin"?"Sellers":"My team"}</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val amber" style="font-size:15px;">${fmt(totOut)}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Open</div>
-          </div>
-          <div class="stat-box" style="padding:10px 6px;text-align:center;">
-            <div class="stat-box-val green" style="font-size:15px;">${fmt(totEarned-totOut)}</div>
-            <div class="stat-box-lbl" style="font-size:8px;">Paid</div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:12px;"><button class="btn-primary" onclick="goSec('s-sellers')">View all sellers →</button></div>`;
-  }
-}
-
-function renderCommission(){
-  const wrap=$("commission-content");
-  const online=onlineSold(ME.agent_id), offline=offlineSold(ME.agent_id);
-  const onRate=getRate(ME.agent_id,online,"online"), offRate=getRate(ME.agent_id,offline,"offline");
-  const earned=commissionEarned(ME.agent_id), paid=totalPaid(ME.agent_id), open=outstanding(ME.agent_id);
-  const offTiers=getTiers(ME.agent_id,"offline"), onTiers=getTiers(ME.agent_id,"online");
-  const curOffMin=currentTierMinFor(ME.agent_id,"offline"), curOnMin=currentTierMinFor(ME.agent_id,"online");
-
-  const tierTableHtml = (tiers, sold, curMin) => tiers.length ? `
-    <table class="tier-table">
-      <thead><tr><th>Min tickets</th><th>Rate/ticket</th><th>Status</th></tr></thead>
-      <tbody>${tiers.map(t=>{
-        const isCurrent=parseInt(t.min_tickets)===curMin, isActive=sold>=parseInt(t.min_tickets);
-        return `<tr class="${isCurrent?"tier-active-row":""}">
-          <td>${t.min_tickets}+</td><td>${parseFloat(t.commission_per_ticket).toFixed(3)}</td>
-          <td><span class="badge ${isCurrent?"b-partial":isActive?"b-paid":"b-pending"}">${isCurrent?"Active":isActive?"Passed":"Locked"}</span></td>
-        </tr>`;
-      }).join("")}</tbody>
-    </table>` : `<div class="empty">No tiers set.</div>`;
-
-  wrap.innerHTML=`
-    <div class="dash-hero">
-      <div class="dash-hero-greeting">My Commission</div>
-      <div class="stat-row" style="grid-template-columns:1fr;margin-bottom:8px;">
-        <div class="stat-box" style="text-align:center;padding:14px;">
-          <div class="stat-box-val orange" style="font-size:28px;">${fmt(earned)}</div>
-          <div class="stat-box-lbl">Total earned</div>
-        </div>
-      </div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-box-val amber">${fmt(open)}</div><div class="stat-box-lbl">Outstanding</div></div>
-        <div class="stat-box"><div class="stat-box-val green">${fmt(paid)}</div><div class="stat-box-lbl">Paid out</div></div>
-      </div>
-      ${tierBarHTML(ME.agent_id,"offline")}
-      ${tierBarHTML(ME.agent_id,"online")}
-    </div>
-    <div class="section-block" style="margin-top:12px;">
-      <div class="collapsible-header" onclick="toggleCollapsible('off-tiers')">
-        <div class="block-title" style="margin-bottom:0;">Offline tiers &middot; ${offRate.toFixed(3)}/ticket</div>
-        <span class="collapsible-arrow" id="off-tiers-arrow">&#9660;</span>
-      </div>
-      <div class="collapsible-body" id="off-tiers-body">
-        <div style="margin-top:10px;">${tierTableHtml(offTiers, offline, curOffMin)}</div>
-      </div>
-    </div>
-    <div class="section-block">
-      <div class="collapsible-header" onclick="toggleCollapsible('on-tiers')">
-        <div class="block-title" style="margin-bottom:0;">Online tiers &middot; ${onRate.toFixed(3)}/ticket</div>
-        <span class="collapsible-arrow" id="on-tiers-arrow">&#9660;</span>
-      </div>
-      <div class="collapsible-body" id="on-tiers-body">
-        <div style="margin-top:10px;">${tierTableHtml(onTiers, online, curOnMin)}</div>
-      </div>
-    </div>
-    <div class="section-block">
-      <div class="block-title">Payments received</div>${renderPaymentsForAgent(ME.agent_id)}
-    </div>`;
-}
-
-function renderMySales(){
-  const wrap=$("mysales-content");
-  const sold=totalSold(ME.agent_id), online=onlineSold(ME.agent_id), offline=offlineSold(ME.agent_id);
-  wrap.innerHTML=`
-    <div class="dash-hero" style="margin-bottom:12px;">
-      <div class="dash-hero-greeting">My Sales</div>
-      <div class="stat-row" style="grid-template-columns:1fr;margin-bottom:8px;">
-        <div class="stat-box" style="text-align:center;padding:14px;">
-          <div class="stat-box-val orange" style="font-size:28px;">${sold}</div>
-          <div class="stat-box-lbl">Total tickets sold</div>
-        </div>
-      </div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-box-val orange">${offline}</div><div class="stat-box-lbl">Offline</div></div>
-        <div class="stat-box"><div class="stat-box-val orange">${online}</div><div class="stat-box-lbl">Online</div></div>
-      </div>
-    </div>
-    <div class="sec-title">All sales</div>
-    ${renderSalesForAgent(ME.agent_id)}`;
-}
-
-function renderSalesForAgent(agentId, limit){
-  const sales=SALES.filter(s=>s.agent_id===agentId&&(s.status||"active")!=="deleted")
-    .sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,limit||999);
-  if(!sales.length) return `<div class="empty">No sales recorded yet.</div>`;
-  return sales.map(s=>{
-    const typeLabel=(s.type||"").toLowerCase()==="online"?"Online":(s.type||"").toLowerCase()==="offline"?"Offline":"";
-    return `<div class="sale-entry">
-      <div class="sale-left">
-        <div class="sale-event">${fmtDate(s.date)}${s.notes?` · ${s.notes}`:""}</div>
-        ${typeLabel?`<div class="sale-type">${typeLabel}</div>`:""}
-      </div>
-      <div class="sale-qty">${s.quantity}</div>
-    </div>`;
-  }).join("");
-}
-
-function renderPaymentsForAgent(agentId){
-  const pays=PAYMENTS.filter(p=>p.agent_id===agentId&&(p.status||"active")!=="deleted")
-    .sort((a,b)=>new Date(b.payment_date)-new Date(a.payment_date));
-  if(!pays.length) return `<div class="empty">No payments received yet.</div>`;
-  return pays.map(p=>`
-    <div class="payment-entry">
-      <div><div style="font-weight:600;font-size:13px;">${p.notes||"Payment"}</div><div class="payment-date">${fmtDate(p.payment_date)}</div></div>
-      <div class="payment-amount">${fmt(p.amount)}</div>
-    </div>`).join("");
-}
-
-function renderSellers(){
-  const role=(ME.role||"seller").toLowerCase();
-  let sellers=role==="admin"
-    ?AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active")
-    :AGENTS.filter(a=>{
-      const mgrs=(a.manager_id||"").split(",").map(x=>x.trim());
-      return mgrs.includes(ME.agent_id)&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active";
-    });
-  const fw=$("sellers-filter");
-  if(role==="admin"){
-    const teams=[...new Set(AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller").map(a=>a.team||"").filter(Boolean))];
-    fw.innerHTML=`<div class="chip on" onclick="filterSellers('all',this)">All</div>`+
-      teams.map(t=>`<div class="chip" onclick="filterSellers('${t}',this)">${t}</div>`).join("");
-  } else { fw.innerHTML=""; }
-  renderSellerCards(sellers);
-}
-
-function filterSellers(f,el){
-  document.querySelectorAll("#sellers-filter .chip").forEach(c=>c.classList.remove("on")); el.classList.add("on");
-  const role=(ME.role||"seller").toLowerCase();
-  let sellers=role==="admin"
-    ?AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active")
-    :AGENTS.filter(a=>{
-      const mgrs=(a.manager_id||"").split(",").map(x=>x.trim());
-      return mgrs.includes(ME.agent_id)&&(a.role||"").toLowerCase()==="seller"&&(a.status||"").toLowerCase()==="active";
-    });
-  if(f!=="all") sellers=sellers.filter(a=>(a.team||"")===f);
-  renderSellerCards(sellers);
-}
-
-function renderSellerCards(sellers){
-  const wrap=$("sellers-list");
-  if(!sellers.length){wrap.innerHTML=`<div class="empty">No sellers found.</div>`;return;}
-  wrap.innerHTML=sellers.map(a=>{
-    const sold=totalSold(a.agent_id);
-    const earned=commissionEarned(a.agent_id), open=outstanding(a.agent_id);
-    const payStatus=open<=0?"b-paid":earned>0?"b-partial":"b-pending";
-    const payLabel=open<=0?"Settled":earned>0?"Outstanding":"No sales";
-    return `<div class="seller-card" onclick="openDetail('${a.agent_id}')">
-      <div class="seller-card-top"><div class="seller-name">${a.name}</div><div class="badge ${payStatus}">${payLabel}</div></div>
-      <div class="seller-meta">${sold} tickets · ${a.team||""}</div>
-      <div class="seller-amounts">
-        <div class="sa"><div class="sa-lbl">Earned</div><div class="sa-val" style="color:var(--sun)">${fmt(earned)}</div></div>
-        <div class="sa"><div class="sa-lbl">Paid</div><div class="sa-val" style="color:var(--green)">${fmt(earned-open)}</div></div>
-        <div class="sa"><div class="sa-lbl">Open</div><div class="sa-val" style="color:var(--amber)">${fmt(open)}</div></div>
-      </div>
-    </div>`;
-  }).join("");
-}
-
-function openDetail(agentId){
-  document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("on"));
-  $("s-detail").classList.add("on");
-  renderDetail(agentId);
-}
-
-$("detail-back").onclick=()=>{
-  const role=(ME.role||"seller").toLowerCase();
-  goSec(role==="seller"?"s-dash":"s-sellers");
-};
-
-function renderDetail(agentId){
-  const agent=AGENTS.find(a=>a.agent_id===agentId)||{};
-  const sold=totalSold(agentId), online=onlineSold(agentId), offline=offlineSold(agentId);
-  const earned=commissionEarned(agentId), paid=totalPaid(agentId), open=outstanding(agentId);
-  const isAdmin=(ME.role||"").toLowerCase()==="admin";
-  const offTiers=getTiers(agentId,"offline"), onTiers=getTiers(agentId,"online");
-  const curOffMin=currentTierMinFor(agentId,"offline"), curOnMin=currentTierMinFor(agentId,"online");
-  const offRate=getRate(agentId,offline,"offline"), onRate=getRate(agentId,online,"online");
-
-  const tierTableHtml = (tiers, sold2, curMin) => tiers.length ? `
-    <table class="tier-table">
-      <thead><tr><th>Min tickets</th><th>Rate/ticket</th><th>Status</th></tr></thead>
-      <tbody>${tiers.map(t=>{
-        const isCurrent=parseInt(t.min_tickets)===curMin, isActive=sold2>=parseInt(t.min_tickets);
-        return `<tr class="${isCurrent?"tier-active-row":""}">
-          <td>${t.min_tickets}+</td><td>${parseFloat(t.commission_per_ticket).toFixed(3)}</td>
-          <td><span class="badge ${isCurrent?"b-partial":isActive?"b-paid":"b-pending"}">${isCurrent?"Active":isActive?"Passed":"Locked"}</span></td>
-        </tr>`;
-      }).join("")}</tbody>
-    </table>` : `<div class="empty" style="padding:12px;">No tiers set.</div>`;
-
-  $("detail-content").innerHTML=`
-    <div class="detail-hero">
-      <div class="detail-name">${agent.name}</div>
-      <div class="detail-sub">${sold} tickets · ${agent.team||""}</div>
-      <div class="detail-amounts">
-        <div class="da"><div class="da-lbl">Earned</div><div class="da-val o">${fmt(earned)}</div></div>
-        <div class="da"><div class="da-lbl">Paid</div><div class="da-val g">${fmt(paid)}</div></div>
-        <div class="da"><div class="da-lbl">Open</div><div class="da-val a">${fmt(open)}</div></div>
-      </div>
-      ${tierBarHTML(agentId,"offline")}
-      ${tierBarHTML(agentId,"online")}
-    </div>
-    ${isAdmin?`<div style="display:flex;gap:8px;margin-bottom:12px;">
-      <button class="btn-ghost btn-sm" onclick="openSale('${agentId}')">+ Add sale</button>
-      <button class="btn-ghost btn-sm" onclick="openPay('${agentId}')">+ Payment</button>
-      <button class="btn-ghost btn-sm" onclick="openTiers('${agentId}')">Edit tiers</button>
-    </div>`:""}
-    <div class="section-block"><div class="block-title">Offline tiers · ${offRate.toFixed(3)}/ticket</div>${tierTableHtml(offTiers,offline,curOffMin)}</div>
-    <div class="section-block"><div class="block-title">Online tiers · ${onRate.toFixed(3)}/ticket</div>${tierTableHtml(onTiers,online,curOnMin)}</div>
-    <div class="section-block"><div class="block-title">Ticket sales</div>${renderSalesForAgent(agentId)}</div>
-    <div class="section-block"><div class="block-title">Payments</div>${renderPaymentsForAgent(agentId)}</div>`;
-}
-
-function renderAdmin(){
-  const wrap=$("admin-content");
-  const managers=AGENTS.filter(a=>(a.role||"").toLowerCase()==="manager");
-  const sellers=AGENTS.filter(a=>(a.role||"").toLowerCase()==="seller");
-  wrap.innerHTML=`
-    <div class="section-block">
-      <div class="block-title">Quick actions</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn-ghost btn-sm" onclick="openM('m-agent')">+ Add agent</button>
-        <button class="btn-ghost btn-sm" onclick="openM('m-event')">+ Add event</button>
-      </div>
-    </div>
-    <div class="section-block">
-      <div class="block-title">Season overview</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div class="stat-box"><div class="stat-box-val orange">${sellers.length}</div><div class="stat-box-lbl">Sellers</div></div>
-        <div class="stat-box"><div class="stat-box-val orange">${managers.length}</div><div class="stat-box-lbl">Managers</div></div>
-        <div class="stat-box"><div class="stat-box-val orange">${SALES.filter(s=>(s.status||"active")!=="deleted").reduce((s,x)=>s+parseInt(x.quantity||0),0)}</div><div class="stat-box-lbl">Total tickets</div></div>
-        <div class="stat-box"><div class="stat-box-val amber">${fmt(sellers.reduce((s,a)=>s+outstanding(a.agent_id),0))}</div><div class="stat-box-lbl">Total outstanding</div></div>
-      </div>
-    </div>
-    <div class="section-block">
-      <div class="block-title">All agents</div>
-      ${AGENTS.filter(a=>(a.status||"").toLowerCase()==="active").map(a=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border2);">
-          <div>
-            <div style="font-size:13px;font-weight:600;">${a.name}</div>
-            <div style="font-size:11px;color:var(--muted);">${a.email||""} · <span class="badge ${{admin:"b-admin",manager:"b-manager",seller:"b-pending"}[(a.role||"seller").toLowerCase()]||"b-pending"}">${a.role||"seller"}</span>${a.team?` · ${a.team}`:""}</div>
-          </div>
-          ${(a.role||"").toLowerCase()==="seller"?`<button class="btn-ghost btn-sm" onclick="openDetail('${a.agent_id}')">View</button>`:""}
-        </div>`).join("")}
-    </div>`;
-}
-
-function openSale(agentId){
-  const agent=AGENTS.find(a=>a.agent_id===agentId)||{};
-  $("ms-agent-id").value=agentId;
-  $("ms-sub").textContent=`Recording tickets for ${agent.name}`;
-  $("ms-qty").value=""; $("ms-date").value=today(); $("ms-notes").value=""; $("ms-msg").textContent="";
-  openM("m-sale");
-}
-
-$("ms-save").onclick=async()=>{
-  const agentId=$("ms-agent-id").value;
-  const qty=parseInt($("ms-qty").value)||0, type=$("ms-type").value;
-  const date=$("ms-date").value, notes=$("ms-notes").value;
-  const msg=$("ms-msg"), btn=$("ms-save");
-  if(!qty||qty<1){msg.textContent="Enter a valid quantity.";return;}
-  msg.textContent="Saving…"; btn.disabled=true;
-  const entry={sale_id:genId("S"),agent_id:agentId,quantity:qty,type,date,notes,status:"active",created_at:new Date().toISOString()};
-  try{
-    await post({action:"add_sale",...entry});
-    SALES.push(entry); closeM("m-sale"); renderDetail(agentId); msg.textContent="";
-  }catch(e){msg.textContent="Failed. Try again.";}
-  btn.disabled=false;
-};
-
-function openPay(agentId){
-  const agent=AGENTS.find(a=>a.agent_id===agentId)||{};
-  const open=outstanding(agentId);
-  $("mp-agent-id").value=agentId;
-  $("mp-sub").textContent=`${agent.name} · ${fmt(open)} outstanding`;
-  $("mp-amount").value=open>0?open.toFixed(2):"";
-  $("mp-date").value=today(); $("mp-notes").value=""; $("mp-msg").textContent="";
-  openM("m-pay");
-}
-
-$("mp-save").onclick=async()=>{
-  const agentId=$("mp-agent-id").value, amount=parseFloat($("mp-amount").value)||0;
-  const date=$("mp-date").value, notes=$("mp-notes").value;
-  const msg=$("mp-msg"), btn=$("mp-save");
-  if(!amount||amount<=0){msg.textContent="Enter a valid amount.";return;}
-  msg.textContent="Saving…"; btn.disabled=true;
-  const entry={payment_id:genId("P"),agent_id:agentId,amount:amount.toFixed(2),payment_date:date,notes,status:"active",created_by:ME.agent_id,created_at:new Date().toISOString()};
-  try{
-    await post({action:"add_payment",...entry});
-    PAYMENTS.push(entry); closeM("m-pay"); renderDetail(agentId); renderSellers(); msg.textContent="";
-  }catch(e){msg.textContent="Failed. Try again.";}
-  btn.disabled=false;
-};
-
-function openTiers(agentId){
-  const agent=AGENTS.find(a=>a.agent_id===agentId)||{};
-  $("mt-agent-id").value=agentId;
-  $("mt-sub").textContent=`Commission tiers for ${agent.name}`;
-  const existing=TIERS.filter(t=>t.agent_id===agentId).sort((a,b)=>parseInt(a.min_tickets)-parseInt(b.min_tickets));
-  $("mt-rows").innerHTML="";
-  if(existing.length) existing.forEach(t=>addTierRow(t.min_tickets,t.commission_per_ticket,t.tier_id,t.type));
-  else { addTierRow(0,"","","offline"); addTierRow(0,"","","online"); }
-  $("mt-msg").textContent=""; openM("m-tiers");
-}
-
-function addTierRow(min="",rate="",tierId="",type="offline"){
-  const div=document.createElement("div");
-  div.style.cssText="display:flex;gap:6px;align-items:center;margin-bottom:8px;";
-  div.innerHTML=`
-    <input type="hidden" class="tr-id" value="${tierId}">
-    <select class="inp tr-type" style="flex:0.8;margin-bottom:0;padding:10px 8px;">
-      <option value="offline"${type==="offline"?" selected":""}>Offline</option>
-      <option value="online"${type==="online"?" selected":""}>Online</option>
-    </select>
-    <input type="number" class="inp tr-min" placeholder="Min" value="${min}" style="flex:1;margin-bottom:0;">
-    <input type="number" class="inp tr-rate" placeholder="Rate" step="0.001" value="${rate}" style="flex:1;margin-bottom:0;">
-    <button onclick="this.parentNode.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">×</button>`;
-  $("mt-rows").appendChild(div);
-}
-
-$("mt-save").onclick=async()=>{
-  const agentId=$("mt-agent-id").value;
-  const rows=$("mt-rows").querySelectorAll("div");
-  const msg=$("mt-msg"), btn=$("mt-save"), newTiers=[];
-  for(const row of rows){
-    const min=parseInt(row.querySelector(".tr-min").value);
-    const rate=parseFloat(row.querySelector(".tr-rate").value);
-    const type=row.querySelector(".tr-type").value;
-    const id=row.querySelector(".tr-id").value||genId("T");
-    if(isNaN(min)||isNaN(rate)){msg.textContent="Fill in all tier fields.";return;}
-    newTiers.push({tier_id:id,agent_id:agentId,type,min_tickets:min,commission_per_ticket:rate.toFixed(4)});
-  }
-  msg.textContent="Saving…"; btn.disabled=true;
-  try{
-    await post({action:"save_tiers",agent_id:agentId,tiers:JSON.stringify(newTiers)});
-    TIERS=TIERS.filter(t=>t.agent_id!==agentId).concat(newTiers);
-    closeM("m-tiers"); renderDetail(agentId); msg.textContent="";
-  }catch(e){msg.textContent="Failed. Try again.";}
-  btn.disabled=false;
-};
-
-$("ma-save").onclick=async()=>{
-  const name=$("ma-name").value.trim(), email=$("ma-email").value.trim();
-  const code=$("ma-code").value.trim(), role=$("ma-role").value;
-  const mgrId=$("ma-manager").value, season=$("ma-season").value.trim();
-  const team=$("ma-team").value;
-  const msg=$("ma-msg"), btn=$("ma-save");
-  if(!name||!email||!code){msg.textContent="Fill in name, email and code.";return;}
-  msg.textContent="Creating…"; btn.disabled=true;
-  const entry={agent_id:genId("A"),name,email,access_code:code,role,manager_id:mgrId,team,season,status:"active",created_at:new Date().toISOString()};
-  try{
-    await post({action:"add_agent",...entry});
-    AGENTS.push(entry); closeM("m-agent"); renderAdmin();
-  }catch(e){msg.textContent="Failed. Try again.";}
-  btn.disabled=false;
-};
-
-$("me-save").onclick=async()=>{
-  const name=$("me-name").value.trim(), date=$("me-date").value;
-  const venue=$("me-venue").value.trim(), season=$("me-season").value.trim();
-  const msg=$("me-msg"), btn=$("me-save");
-  if(!name||!date){msg.textContent="Name and date are required.";return;}
-  msg.textContent="Saving…"; btn.disabled=true;
-  const entry={event_id:genId("E"),event_name:name,event_date:date,venue,season,status:"active"};
-  try{
-    await post({action:"add_event",...entry});
-    EVENTS.push(entry); closeM("m-event"); renderAdmin();
-  }catch(e){msg.textContent="Failed. Try again.";}
-  btn.disabled=false;
-};
-
-function openM(id){
-  if(id==="m-agent"){
-    const managers=AGENTS.filter(a=>(a.role||"").toLowerCase()==="manager");
-    $("ma-manager").innerHTML=`<option value="">— None —</option>`+managers.map(m=>`<option value="${m.agent_id}">${m.name}</option>`).join("");
-  }
-  $(id).classList.add("open");
-}
-function closeM(id){$(id).classList.remove("open");}
-document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
-
-function renderProfile(){
-  const wrap=$("profile-content");
-  const role=(ME.role||"seller").toLowerCase();
-  const roleLabel=role==="admin"?"Admin":role==="manager"?"Manager":"Seller";
-  const roleBadge=role==="admin"?"b-admin":role==="manager"?"b-manager":"b-pending";
-  wrap.innerHTML=`
-    <div class="dash-hero">
-      <div class="dash-hero-greeting">My Profile</div>
-      <div class="dash-hero-name"><span>${ME.name}</span></div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-        <span class="badge ${roleBadge}">${roleLabel}</span>
-        <span style="font-size:12px;color:var(--muted);">${ME.email||""}</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div class="stat-box" style="padding:12px;">
-          <div class="stat-box-lbl" style="margin-bottom:4px;">Team</div>
-          <div style="font-size:14px;font-weight:600;">${ME.team||"—"}</div>
-        </div>
-        <div class="stat-box" style="padding:12px;">
-          <div class="stat-box-lbl" style="margin-bottom:4px;">Season</div>
-          <div style="font-size:14px;font-weight:600;">${ME.season||"2026"}</div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:16px;">
-      <button class="btn-ghost" style="width:100%;color:var(--red);" onclick="doLogout()">Log out</button>
-    </div>`;
-}
-
-function toggleCollapsible(id){
-  const body=document.getElementById(id+'-body');
-  const arrow=document.getElementById(id+'-arrow');
-  if(!body||!arrow) return;
-  const isOpen=body.classList.contains('open');
-  body.classList.toggle('open',!isOpen);
-  arrow.classList.toggle('open',!isOpen);
-}
-
-function toggleCollapsible(id){
-  const body=document.getElementById(id+'-body');
-  const arrow=document.getElementById(id+'-arrow');
-  if(!body||!arrow) return;
-  const isOpen=body.classList.contains('open');
-  body.classList.toggle('open',!isOpen);
-  arrow.classList.toggle('open',!isOpen);
-}
-
-window.addEventListener("DOMContentLoaded",async()=>{
-  const saved=localStorage.getItem("ua2_me");
-  if(saved){ME=JSON.parse(saved);await boot();}
-  else{$("page-login").style.display="flex";$("page-login").classList.add("show");}
-});
-
-(function(){
-  let startY=0,pulling=false,triggered=false;
-  const ind=document.getElementById('ptr-indicator');
-  const lbl=document.getElementById('ptr-label');
-  const THRESHOLD=80;
-  document.addEventListener('touchstart',e=>{if(window.scrollY===0){startY=e.touches[0].clientY;pulling=true;triggered=false;}},{passive:true});
-  document.addEventListener('touchmove',e=>{
-    if(!pulling) return;
-    const dist=e.touches[0].clientY-startY;
-    if(dist>0&&window.scrollY===0){
-      ind.classList.add('visible');ind.classList.remove('releasing');
-      if(dist>=THRESHOLD){lbl.textContent='Release to refresh';triggered=true;}
-      else{lbl.textContent='Pull to refresh';triggered=false;}
+      return true;
     }
-  },{passive:true});
-  document.addEventListener('touchend',async e=>{
-    if(!pulling) return;
-    pulling=false;
-    if(triggered){
-      ind.classList.add('releasing');lbl.textContent='Refreshing…';
-      await loadData();
-      const active=document.querySelector('.sec.on');
-      if(active){
-        const id=active.id;
-        if(id==='s-dash') renderDash();
-        if(id==='s-commission') renderCommission();
-        if(id==='s-mysales') renderMySales();
-        if(id==='s-sellers') renderSellers();
-        if(id==='s-admin') renderAdmin();
-        if(id==='s-profile') renderProfile();
-      }
+  }
+  return false;
+}
+
+function deleteById(sheetName, idCol, idVal) {
+  updateById(sheetName, idCol, idVal, {status:"deleted"});
+}
+
+function doGet(e) {
+  const tabName = (e.parameter.tab||"").trim();
+  try {
+    const data = sheetToJson(tabName);
+    return out(data);
+  } catch(err) {
+    return out({error: err.message});
+  }
+}
+
+function doPost(e) {
+  const p = e.parameter;
+  const action = p.action;
+  let result = {ok:false, action};
+  try {
+    switch(action) {
+
+      case "add_agent":
+        appendRow("AGENTS", {
+          agent_id: p.agent_id,
+          name: p.name,
+          email: p.email,
+          access_code: p.access_code,
+          role: p.role || "seller",
+          team: p.team || "",
+          manager_id: p.manager_id || "",
+          season: p.season || "",
+          status: "active",
+          created_at: p.created_at || now()
+        });
+        result.ok = true;
+        break;
+
+      case "save_tiers":
+        const agentId = p.agent_id;
+        const tiers = JSON.parse(p.tiers || "[]");
+        const tiersSheet = tab("TIERS");
+        const tiersData = tiersSheet.getDataRange().getValues();
+        const tiersHdrs = tiersData[0];
+        const aidIdx = tiersHdrs.indexOf("agent_id");
+        const stIdx  = tiersHdrs.indexOf("status");
+        for(let i=1;i<tiersData.length;i++){
+          if(String(tiersData[i][aidIdx]) === String(agentId)){
+            if(stIdx >= 0) tiersSheet.getRange(i+1, stIdx+1).setValue("deleted");
+          }
+        }
+        tiers.forEach(t => appendRow("TIERS", {
+          tier_id: t.tier_id,
+          agent_id: agentId,
+          type: t.type || "",
+          min_tickets: t.min_tickets,
+          commission_per_ticket: t.commission_per_ticket,
+          status: "active"
+        }));
+        result.ok = true;
+        break;
+
+      case "add_sale":
+        appendRow("TICKET_SALES", {
+          sale_id: p.sale_id,
+          agent_id: p.agent_id,
+          quantity: p.quantity,
+          type: p.type || "",
+          date: p.date,
+          notes: p.notes || "",
+          status: "active",
+          created_at: p.created_at || now()
+        });
+        result.ok = true;
+        break;
+
+      case "delete_sale":
+        deleteById("TICKET_SALES", "sale_id", p.sale_id);
+        result.ok = true;
+        break;
+
+      case "add_payment":
+        appendRow("PAYMENTS", {
+          payment_id: p.payment_id,
+          agent_id: p.agent_id,
+          amount: p.amount,
+          payment_date: p.payment_date,
+          notes: p.notes || "",
+          status: "active",
+          created_by: p.created_by || "",
+          created_at: p.created_at || now()
+        });
+        result.ok = true;
+        break;
+
+      case "delete_payment":
+        deleteById("PAYMENTS", "payment_id", p.payment_id);
+        result.ok = true;
+        break;
+
+      case "add_event":
+        appendRow("EVENTS", {
+          event_id: p.event_id,
+          event_name: p.event_name,
+          event_date: p.event_date,
+          venue: p.venue || "",
+          season: p.season || "",
+          status: "active"
+        });
+        result.ok = true;
+        break;
+
+      case "add_booking":
+        appendRow("BOOKINGS", {
+          booking_id: p.booking_id,
+          artist_id: p.artist_id,
+          event_name: p.event_name,
+          location: p.location || "",
+          date: p.date,
+          start_time: p.start_time || "",
+          end_time: p.end_time || "",
+          status: p.status || "aangevraagd",
+          notes: p.notes || ""
+        });
+        result.ok = true;
+        break;
+
+      case "update_booking":
+        updateById("BOOKINGS", "booking_id", p.booking_id, {status: p.status});
+        result.ok = true;
+        break;
     }
-    ind.classList.remove('visible','releasing');lbl.textContent='Pull to refresh';triggered=false;
-  },{passive:true});
-})();
-</script>
-</body>
-</html>
+  } catch(err) {
+    result.error = err.message;
+  }
+  return out(result);
+}
+
+function out(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function now() { return new Date().toISOString(); }
