@@ -252,6 +252,7 @@ textarea.inp{border-radius:var(--r);resize:vertical;min-height:76px;}
     <div class="sec" id="s-booking"><div style="padding-top:12px;" id="booking-content"></div></div>
     <div class="sec" id="s-artist"><div style="padding-top:12px;" id="artist-content"></div></div>
     <div class="sec" id="s-deal"><div style="padding-top:12px;" id="deal-content"></div></div>
+    <div class="sec" id="s-inbox"><div style="padding-top:12px;" id="inbox-content"></div></div>
   </div>
   <nav class="bottom-nav" id="bottom-nav"></nav>
 </div>
@@ -429,8 +430,8 @@ const NAV_ITEMS = {
   manager: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"My Team"},{id:"s-profile",icon:"👤",label:"Profile"}],
   admin:   [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"Sellers"},{id:"s-admin",icon:"⚙",label:"Admin"},{id:"s-profile",icon:"👤",label:"Profile"}],
   booker:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-booking",icon:"🎵",label:"Booking"},{id:"s-profile",icon:"👤",label:"Profile"}],
-  artist:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-deal",icon:"📋",label:"My Deal"},{id:"s-profile",icon:"👤",label:"Profile"}],
-  artiest: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-deal",icon:"📋",label:"My Deal"},{id:"s-profile",icon:"👤",label:"Profile"}]
+  artist:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-deal",icon:"📋",label:"My Deal"},{id:"s-inbox",icon:"📬",label:"Inbox"}],
+  artiest: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-deal",icon:"📋",label:"My Deal"},{id:"s-inbox",icon:"📬",label:"Inbox"}]
 };
 
 function buildNav(){
@@ -457,6 +458,7 @@ function goSec(id){
   if(id==="s-booking") renderBooking();
   if(id==="s-artist") renderArtistPage();
   if(id==="s-deal") renderDeal();
+  if(id==="s-inbox") renderInbox();
 }
 
 $("l-btn").onclick = async () => {
@@ -541,9 +543,8 @@ function renderDash(){
     const pending=myBookings.filter(b=>(b.status||"").toLowerCase()==="aangevraagd");
     const upcoming=myBookings.filter(b=>(b.status||"").toLowerCase()==="geaccepteerd"&&new Date(b.date)>=new Date());
     wrap.innerHTML=`
-      <div style="background:#fff;border-radius:20px;padding:20px;margin-bottom:12px;color:#000;">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:4px;">Welkom terug</div>
-        <div style="font-size:24px;font-weight:800;color:#000;margin-bottom:16px;">${ME.name}</div>
+      <div style="font-size:26px;font-weight:800;color:var(--sun);margin-bottom:10px;padding:0 4px;">${ME.name}</div>
+      <div style="background:#fff;border-radius:20px;padding:16px;margin-bottom:16px;color:#000;">
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
           <div style="background:#f5f5f5;border-radius:12px;padding:12px 8px;text-align:center;">
             <div style="font-size:22px;font-weight:700;color:#F97316;">${todayShows.length}</div>
@@ -555,34 +556,23 @@ function renderDash(){
           </div>
           <div style="background:#F97316;border-radius:12px;padding:12px 8px;text-align:center;">
             <div style="font-size:22px;font-weight:700;color:#fff;">${pending.length}</div>
-            <div style="font-size:9px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.1em;">Open</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.1em;">Inbox</div>
           </div>
         </div>
       </div>
-      ${todayShows.length>0?`
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;">Vandaag</div>
-        ${todayShows.map(b=>`<div class="show-card">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;">Vandaag</div>
+      ${todayShows.length>0?todayShows.map(b=>`
+        <div class="show-card">
           <div class="show-card-img">🎵</div>
           <div class="show-card-body">
             <div class="show-card-title">${b.event_name}</div>
-            <div class="show-card-meta">${b.location||""} · ${b.start_time||""}${b.end_time?" – "+b.end_time:""}</div>
+            <div class="show-card-meta">${b.location||""}</div>
+            <div class="show-card-meta">${b.start_time||""}${b.end_time?" – "+b.end_time:""}</div>
           </div>
-        </div>`).join("")}
-      `:""}
-      ${pending.length>0?`
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:12px 0 10px;">Actie vereist</div>
-        ${pending.map(b=>`<div class="show-card">
-          <div class="show-card-body" style="padding:16px;">
-            <div class="show-card-title">${b.event_name}</div>
-            <div class="show-card-meta">${fmtDate(b.date)} · ${b.location||""} · ${b.start_time||""}</div>
-            <div class="show-card-actions" style="margin-top:10px;">
-              <button class="show-btn show-btn-pending" onclick="respondBooking('${b.booking_id}','geaccepteerd')">Accepteren</button>
-              <button class="show-btn show-btn-confirmed" onclick="respondBooking('${b.booking_id}','geweigerd')">Weigeren</button>
-            </div>
-          </div>
-        </div>`).join("")}
-      `:""}
-      <div style="margin-top:12px;"><button class="btn-primary" onclick="goSec('s-artist')">Alle shows →</button></div>
+        </div>`).join(""):`<div style="color:var(--muted);font-size:13px;padding:16px 0;">Geen shows vandaag.</div>`}
+      <div style="margin-top:24px;">
+        <button class="btn-ghost" style="width:100%;color:var(--muted);" onclick="doLogout()">Log out</button>
+      </div>
     `;
     return;
   }
@@ -1119,7 +1109,7 @@ async function respondBooking(bookingId, status){
 }
 
 // ── ARTIST PAGE ──
-let ARTIST_WEEK_FILTER = 'upcoming';
+let ARTIST_WEEK_FILTER = '0';
 
 function getWeekLabel(weekOffset) {
   const now = new Date();
@@ -1151,8 +1141,8 @@ function renderArtistPage(weekFilter){
     .sort((a,b)=>new Date(a.date)-new Date(b.date));
 
   let filtered;
-  if(ARTIST_WEEK_FILTER === 'upcoming') {
-    filtered = allBookings.filter(b=>new Date(b.date)>=new Date(new Date().toDateString()));
+  if(ARTIST_WEEK_FILTER === 'past') {
+    filtered = allBookings.filter(b=>new Date(b.date)<new Date(new Date().toDateString()));
   } else {
     const weekOffset = parseInt(ARTIST_WEEK_FILTER);
     filtered = allBookings.filter(b=>isInWeek(b.date, weekOffset));
@@ -1187,8 +1177,8 @@ function renderArtistPage(weekFilter){
     </div>`;
   };
 
-  const weeks = ['upcoming',0,1,2,3,4];
-  const weekLabels = ['Aankomend','Deze week','Volgende week','Week 3','Week 4','Week 5'];
+  const weeks = ['past',0,1,2,3,4,5,6,7,8];
+  const weekLabels = ['Past','This week','W01','W02','W03','W04','W05','W06','W07','W08'];
 
   wrap.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -1199,24 +1189,106 @@ function renderArtistPage(weekFilter){
       ${weeks.map((w,i)=>`<button class="week-chip${ARTIST_WEEK_FILTER===String(w)?' active':''}" onclick="renderArtistPage('${w}')">${weekLabels[i]}</button>`).join("")}
     </div>
     <div id="calendar-view" style="display:none;background:#fff;border-radius:16px;padding:16px;margin-bottom:16px;color:#000;">
-      <div style="font-size:14px;font-weight:700;margin-bottom:8px;">Agenda</div>
-      ${allBookings.length?allBookings.map(b=>`
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;">
-          <div>
-            <div style="font-size:13px;font-weight:600;">${b.event_name}</div>
-            <div style="font-size:11px;color:#666;">${b.location||""}</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:12px;font-weight:600;">${fmtDate(b.date)}</div>
-            <div style="font-size:11px;color:${(b.status||"")==="geaccepteerd"?"#22c55e":(b.status||"")==="aangevraagd"?"#f97316":"#ef4444"};">${b.status}</div>
-          </div>
-        </div>`).join(""):`<div style="color:#999;font-size:13px;">Geen shows gepland.</div>`}
+      ${buildCalendar(allBookings)}
     </div>
     ${Object.keys(grouped).length?Object.keys(grouped).sort().map(dk=>`
       <span class="show-date-header">${fmtDate(dk)}</span>
       ${grouped[dk].map(showCard).join("")}
     `).join(""):`<div class="empty" style="color:var(--muted);">Geen shows in deze periode.</div>`}
   `;
+}
+
+// ── INBOX ──
+function renderInbox(){
+  const wrap=$("inbox-content");
+  const pending=BOOKINGS.filter(b=>b.artist_id===ME.agent_id&&(b.status||"").toLowerCase()==="aangevraagd")
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const all=BOOKINGS.filter(b=>b.artist_id===ME.agent_id&&(b.status||"")!=="deleted")
+    .sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  wrap.innerHTML=`
+    <div style="font-size:18px;font-weight:700;margin-bottom:16px;">Inbox</div>
+    ${pending.length?`
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;">Actie vereist (${pending.length})</div>
+      ${pending.map(b=>`
+        <div class="show-card">
+          <div class="show-card-img">🎵</div>
+          <div class="show-card-body">
+            <div class="show-card-title">${b.event_name}</div>
+            <div class="show-card-meta">${b.location||""}</div>
+            <div class="show-card-meta">${fmtDate(b.date)} · ${b.start_time||""}${b.end_time?" – "+b.end_time:""}</div>
+            <div class="show-card-actions" style="margin-top:10px;">
+              <button class="show-btn show-btn-pending" onclick="respondBooking('${b.booking_id}','geaccepteerd')">Accepteren</button>
+              <button class="show-btn show-btn-confirmed" onclick="respondBooking('${b.booking_id}','geweigerd')">Weigeren</button>
+            </div>
+          </div>
+        </div>
+      `).join("")}
+    `:`<div style="color:var(--muted);font-size:13px;text-align:center;padding:32px 0;">Geen openstaande aanvragen.</div>`}
+    ${all.filter(b=>(b.status||"").toLowerCase()!=="aangevraagd").length?`
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:16px 0 10px;">Eerder</div>
+      ${all.filter(b=>(b.status||"").toLowerCase()!=="aangevraagd").map(b=>{
+        const col=b.status==="geaccepteerd"?"#22c55e":b.status==="geweigerd"?"#ef4444":"#F97316";
+        return `<div style="display:flex;justify-content:space-between;align-items:center;background:var(--card);border-radius:14px;padding:14px;margin-bottom:8px;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">${b.event_name}</div>
+            <div style="font-size:11px;color:var(--muted);">${fmtDate(b.date)} · ${b.location||""}</div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:${col};">${b.status}</span>
+        </div>`;
+      }).join("")}
+    `:""}
+  `;
+}
+
+function buildCalendar(bookings){
+  const now=new Date();
+  const year=now.getFullYear(), month=now.getMonth();
+  const monthNames=['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const startOffset=(firstDay+6)%7;
+
+  const bookedDates={};
+  bookings.forEach(b=>{
+    if(b.date) {
+      const ds=b.date.slice(0,10);
+      if(!bookedDates[ds]) bookedDates[ds]=[];
+      bookedDates[ds].push(b.status);
+    }
+  });
+
+  let html=`<div style="font-size:14px;font-weight:700;margin-bottom:12px;text-align:center;">${monthNames[month]} ${year}</div>`;
+  html+=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">`;
+  ['Ma','Di','Wo','Do','Vr','Za','Zo'].forEach(d=>{
+    html+=`<div style="text-align:center;font-size:10px;font-weight:700;color:#999;">${d}</div>`;
+  });
+  html+=`</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">`;
+
+  for(let i=0;i<startOffset;i++) html+=`<div></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const statuses=bookedDates[ds]||[];
+    const isToday=d===now.getDate();
+    html+=`<div style="text-align:center;padding:4px 0;">
+      <div style="font-size:13px;font-weight:${isToday?'700':'400'};color:${isToday?'#F97316':'#000'};background:${isToday?'rgba(249,115,22,0.1)':'transparent'};border-radius:50%;width:28px;height:28px;line-height:28px;margin:0 auto;">${d}</div>
+      <div style="display:flex;justify-content:center;gap:2px;margin-top:2px;">
+        ${statuses.map(s=>`<div style="width:6px;height:6px;border-radius:50%;background:${s==='geaccepteerd'?'#22c55e':s==='aangevraagd'?'#F97316':'#ef4444'};"></div>`).join('')}
+      </div>
+    </div>`;
+  }
+  html+=`</div>`;
+
+  if(Object.keys(bookedDates).length){
+    html+=`<div style="margin-top:12px;padding-top:12px;border-top:1px solid #f0f0f0;">
+      <div style="display:flex;gap:12px;font-size:11px;">
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:4px;"></span>Bevestigd</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#F97316;margin-right:4px;"></span>Aangevraagd</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;margin-right:4px;"></span>Geweigerd</span>
+      </div>
+    </div>`;
+  }
+  return html;
 }
 
 function toggleCalendar(){
@@ -1235,6 +1307,9 @@ function requestChange(bookingId, eventName){
 function renderDeal(){
   const wrap=$("deal-content");
   const agent=AGENTS.find(a=>a.agent_id===ME.agent_id)||ME;
+  const earned=commissionEarned(ME.agent_id);
+  const paid=totalPaid(ME.agent_id);
+  const open=outstanding(ME.agent_id);
 
   const dealItems = [
     {icon:"🏠", title:"Verblijf", key:"deal_verblijf"},
@@ -1248,13 +1323,63 @@ function renderDeal(){
 
   wrap.innerHTML=`
     <div style="font-size:18px;font-weight:700;margin-bottom:16px;">My Deal</div>
-    ${dealItems.map(item=>`
-      <div class="deal-card">
-        <div class="deal-card-icon">${item.icon}</div>
-        <div class="deal-card-title">${item.title}</div>
-        <div class="deal-card-value">${agent[item.key]||"Niet ingesteld"}</div>
+
+    <!-- Betaling collapsible -->
+    <div class="deal-card" style="margin-bottom:10px;">
+      <div class="collapsible-header" onclick="toggleCollapsible('deal-payment')" style="padding:0;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:24px;">💳</span>
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;">Betaling</div>
+            <div style="font-size:14px;font-weight:600;color:#000;">${fmt(open)} openstaand</div>
+          </div>
+        </div>
+        <span class="collapsible-arrow" id="deal-payment-arrow" style="color:#999;">▼</span>
       </div>
-    `).join("")}
+      <div class="collapsible-body" id="deal-payment-body">
+        <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div style="background:#f5f5f5;border-radius:12px;padding:12px 8px;text-align:center;">
+            <div style="font-size:14px;font-weight:700;color:#000;">${fmt(earned)}</div>
+            <div style="font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.1em;">Total</div>
+          </div>
+          <div style="background:#f5f5f5;border-radius:12px;padding:12px 8px;text-align:center;">
+            <div style="font-size:14px;font-weight:700;color:#22c55e;">${fmt(paid)}</div>
+            <div style="font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.1em;">Paid</div>
+          </div>
+          <div style="background:#F97316;border-radius:12px;padding:12px 8px;text-align:center;">
+            <div style="font-size:14px;font-weight:700;color:#fff;">${fmt(open)}</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.1em;">Open</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deal collapsible -->
+    <div class="deal-card">
+      <div class="collapsible-header" onclick="toggleCollapsible('deal-items')" style="padding:0;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:24px;">📋</span>
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;">Deal</div>
+            <div style="font-size:14px;font-weight:600;color:#000;">Mijn afspraken</div>
+          </div>
+        </div>
+        <span class="collapsible-arrow" id="deal-items-arrow" style="color:#999;">▼</span>
+      </div>
+      <div class="collapsible-body" id="deal-items-body">
+        <div style="margin-top:14px;">
+          ${dealItems.map(item=>`
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+              <span style="font-size:22px;width:32px;text-align:center;">${item.icon}</span>
+              <div>
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;">${item.title}</div>
+                <div style="font-size:14px;font-weight:600;color:#000;">${agent[item.key]||"Niet ingesteld"}</div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    </div>
     <div style="font-size:11px;color:var(--muted);text-align:center;padding:16px 0;">Deal ingesteld door de boeker</div>
   `;
 }
@@ -1365,6 +1490,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
         if(id==='s-booking') renderBooking();
         if(id==='s-artist') renderArtistPage();
         if(id==='s-deal') renderDeal();
+        if(id==='s-inbox') renderInbox();
       }
     }
     ind.classList.remove('visible','releasing');lbl.textContent='Pull to refresh';triggered=false;
