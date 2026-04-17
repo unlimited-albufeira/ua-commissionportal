@@ -409,12 +409,14 @@ const NAV_ITEMS = {
   manager: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"My Team"},{id:"s-profile",icon:"👤",label:"Profile"}],
   admin:   [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-sellers",icon:"◉",label:"Sellers"},{id:"s-admin",icon:"⚙",label:"Admin"},{id:"s-profile",icon:"👤",label:"Profile"}],
   booker:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-booking",icon:"🎵",label:"Booking"},{id:"s-profile",icon:"👤",label:"Profile"}],
-  artist:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-profile",icon:"👤",label:"Profile"}]
+  artist:  [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-profile",icon:"👤",label:"Profile"}],
+  artiest: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-profile",icon:"👤",label:"Profile"}],
+  artiest: [{id:"s-dash",icon:"☀",label:"Dashboard"},{id:"s-artist",icon:"🎤",label:"My Shows"},{id:"s-profile",icon:"👤",label:"Profile"}]
 };
 
 function buildNav(){
   const role=(ME.role||"seller").toLowerCase();
-  const items=NAV_ITEMS[role]||NAV_ITEMS.seller;
+  const items=NAV_ITEMS[role]||(role==="artist"?NAV_ITEMS.artist:role==="booker"?NAV_ITEMS.booker:NAV_ITEMS.seller);
   $("bottom-nav").innerHTML=items.map(i=>`
     <button class="nav-item${i.id==="s-dash"?" on":""}" id="nav-${i.id}" onclick="goSec('${i.id}')">
       <span style="font-size:17px;">${i.icon}</span>${i.label}
@@ -484,7 +486,7 @@ function renderDash(){
   const role=(ME.role||"seller").toLowerCase();
   const wrap=$("dash-content");
   if(role==="booker"){
-    const artists=AGENTS.filter(a=>(a.role||"").toLowerCase()==="artist"&&(a.status||"").toLowerCase()==="active");
+    const artists=AGENTS.filter(a=>["artist","artiest"].includes((a.role||"").toLowerCase())&&(a.status||"").toLowerCase()==="active");
     const totalBookings=BOOKINGS.filter(b=>(b.status||"")!=="deleted").length;
     const pending=BOOKINGS.filter(b=>(b.status||"").toLowerCase()==="aangevraagd").length;
     const confirmed=BOOKINGS.filter(b=>(b.status||"").toLowerCase()==="geaccepteerd").length;
@@ -512,7 +514,7 @@ function renderDash(){
     return;
   }
 
-  if(role==="artist"){
+  if(role==="artist"||role==="artiest"){
     const myBookings=BOOKINGS.filter(b=>b.artist_id===ME.agent_id&&(b.status||"")!=="deleted");
     const upcoming=myBookings.filter(b=>(b.status||"").toLowerCase()==="geaccepteerd"&&new Date(b.date)>=new Date());
     const pending=myBookings.filter(b=>(b.status||"").toLowerCase()==="aangevraagd");
@@ -802,7 +804,7 @@ function openDetail(agentId){
 
 $("detail-back").onclick=()=>{
   const role=(ME.role||"seller").toLowerCase();
-  goSec(role==="seller"?"s-dash":"s-sellers");
+  goSec(role==="seller"||role==="artist"?"s-dash":"s-sellers");
 };
 
 function renderDetail(agentId){
@@ -1020,7 +1022,7 @@ document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{
 // ── BOOKING PAGE (booker) ──
 function renderBooking(){
   const wrap=$("booking-content");
-  const artists=AGENTS.filter(a=>(a.role||"").toLowerCase()==="artist"&&(a.status||"").toLowerCase()==="active");
+  const artists=AGENTS.filter(a=>["artist","artiest"].includes((a.role||"").toLowerCase())&&(a.status||"").toLowerCase()==="active");
   const events=EVENTS.filter(e=>(e.status||"active")!=="deleted").sort((a,b)=>new Date(a.event_date)-new Date(b.event_date));
 
   wrap.innerHTML=`
